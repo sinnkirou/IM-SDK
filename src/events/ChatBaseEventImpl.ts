@@ -1,5 +1,5 @@
 import IChatBaseEvent from './inteface/IChatBaseEvent';
-import { ChatBaseCB } from '../index.d';
+import {ChatBaseCB, } from './inteface/IEventCallBack';
 
 export default class ChatBaseEventImpl implements IChatBaseEvent {
 	private static TAG: string = "ChatBaseEventImpl";

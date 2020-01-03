@@ -1,6 +1,6 @@
 import ErrorCode from '../base/ErrorCode';
 import IChatTransDataEvent from './inteface/IChatTransDataEvent';
-import { ChatTransDataCB } from '../index.d';
+import { ChatTransDataCB, } from './inteface/IEventCallBack';
 
 export default class ChatTransDataEventImpl implements IChatTransDataEvent {
     private static TAG: string = "ChatTransDataEventImpl";

@@ -13,11 +13,3 @@ export interface MessageQoSCB {
     handleMessageLost?: (messages: Array<object>) => void,
     messagesBeReceivedCB?: (fingerPrint: string) => void
 }
-
-export interface WSOptions {
-    wsUrl: string,
-    wsProtocal?: string,
-    chatBaseCB?: ChatBaseCB,
-    chatTransDataCB?: ChatTransDataCB,
-    messageQoSCB?: MessageQoSCB,
-}

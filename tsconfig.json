@@ -13,5 +13,7 @@
       "@/*": ["src/*",]
     },
     "allowSyntheticDefaultImports": true,
-  }
+    // "declaration": true,
+    // "outDir": "src/types/"
+  },
 }

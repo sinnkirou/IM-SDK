@@ -4,7 +4,15 @@ import ChatTransDataEventImpl from './events/ChatTransDataEventImpl';
 import MessageQoSEventImpl from './events/MessageQoSEventImpl';
 import { SendCommonDataAsync, SendLoginDataAsync, SendLogoutDataAsync } from './core/LocalWSDataSender';
 import ProtocalFactory from './base/ProtocalFactory';
-import { WSOptions } from './index.d';
+import {ChatBaseCB, ChatTransDataCB, MessageQoSCB } from './events/inteface/IEventCallBack';
+
+interface WSOptions {
+    wsUrl: string,
+    wsProtocal?: string,
+    chatBaseCB?: ChatBaseCB,
+    chatTransDataCB?: ChatTransDataCB,
+    messageQoSCB?: MessageQoSCB,
+}
 
 export default class IMClientManager {
 	private static TAG: string = 'IMClientManager';

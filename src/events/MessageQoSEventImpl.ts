@@ -1,6 +1,6 @@
 import Protocal from '../base/Protocal';
 import IMessageQoSEvent from './inteface/IMessageQoSEvent';
-import { MessageQoSCB } from '../index.d';
+import { MessageQoSCB } from './inteface/IEventCallBack';
 
 export default class MessageQoSEventImpl implements IMessageQoSEvent {
     private static TAG: string = 'MessageQoSEventImpl';
