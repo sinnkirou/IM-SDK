@@ -1,12 +1,14 @@
 import Protocal from '../base/Protocal';
 import IMessageQoSEvent from './inteface/IMessageQoSEvent';
+import { MessageQoSCB } from '../index.d';
 
 export default class MessageQoSEventImpl implements IMessageQoSEvent {
     private static TAG: string = 'MessageQoSEventImpl';
-    private handleMessageLost: (messages: Array<object>)=> void = null;
+    private handleMessageLost: (messages: Array<object>) => void = null;
     private messagesBeReceivedCB: (fingerPrint: string) => void = null;
 
-    constructor(handleMessageLost?: (messages: Array<object>)=> void, messagesBeReceivedCB?: (fingerPrint: string) => void) {
+    constructor(options?: MessageQoSCB) {
+        const { handleMessageLost, messagesBeReceivedCB } = options
         this.handleMessageLost = handleMessageLost;
         this.messagesBeReceivedCB = messagesBeReceivedCB;
     }

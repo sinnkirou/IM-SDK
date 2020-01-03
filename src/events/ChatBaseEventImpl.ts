@@ -1,4 +1,5 @@
 import IChatBaseEvent from './inteface/IChatBaseEvent';
+import { ChatBaseCB } from '../index.d';
 
 export default class ChatBaseEventImpl implements IChatBaseEvent {
 	private static TAG: string = "ChatBaseEventImpl";
@@ -6,7 +7,8 @@ export default class ChatBaseEventImpl implements IChatBaseEvent {
 	private onLoginOrReloginFailCB: () => void = null;
 	private onLinkCloseMessageCB: () => void = null;
 
-	constructor(onLoginOrReloginSuccessCB?: () => void, onLoginOrReloginFailCB?: () => void, onLinkCloseMessageCB?: () => void) {
+	constructor(options?: ChatBaseCB) {
+		const { onLoginOrReloginSuccessCB, onLoginOrReloginFailCB, onLinkCloseMessageCB } = options;
 		this.onLoginOrReloginSuccessCB = onLoginOrReloginSuccessCB;
 		this.onLinkCloseMessageCB = onLinkCloseMessageCB;
 		this.onLoginOrReloginFailCB = onLoginOrReloginFailCB;
@@ -25,7 +27,7 @@ export default class ChatBaseEventImpl implements IChatBaseEvent {
 				this.onLoginOrReloginFailCB();
 			}
 		}
-		
+
 	}
 
 	public onLinkCloseMessage(dwErrorCode: number): void {

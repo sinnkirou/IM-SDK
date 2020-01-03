@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDom from 'react-dom';
-// import style from './index';
-import Manager, { Events } from '../src/index';
+import styles from './index.less';
+import Manager from '../src/index';
 // import Manager from '../dist/index';
 
 const Demo = () => {
-	const { ChatBaseEventImpl, ChatTransDataEventImpl, MessageQoSEventImpl } = Events;
 	const [status, setStatus] = useState(null);
 	const [message, setMessage] = useState(null);
 	const [error, setError] = useState(null);
@@ -13,19 +12,25 @@ const Demo = () => {
 	const [msgBeReveived, setMsgBeReveived] = useState(null);
 	const manager = new Manager({
 		wsUrl: 'ws://192.168.198.202:7901/ws',
-		chatbaseEventImpl: new ChatBaseEventImpl(
-			() => {
+		chatBaseCB: {
+			onLoginOrReloginSuccessCB: () => {
 				setStatus('登陆成功');
 			},
-			() => {
+			onLoginOrReloginFailCB: () => {
 				setStatus('登陆失败');
 			},
-			() => {
+			onLinkCloseMessageCB: () => {
 				setStatus('连接失败');
 			}
-		),
-		chatTransDataEventImpl: new ChatTransDataEventImpl(onTransBufferCB, onTransErrorCB),
-		messageQoSEventImpl: new MessageQoSEventImpl(handleMessageLost, messagesBeReceivedCB)
+		},
+		chatTransDataCB: {
+			onTransBufferCB,
+			onTransErrorCB,
+		},
+		messageQoSCB: {
+			handleMessageLost,
+			messagesBeReceivedCB,
+		}
 	});
 
 	useEffect(() => componentWillUnmount, []);
@@ -42,13 +47,13 @@ const Demo = () => {
 	function onTransBufferCB(params) {
 		const { fingerPrintOfProtocal, userid, dataContent, typeu } = params;
 		setMessage(
-			`fp: ${fingerPrintOfProtocal}\n\n userid: ${userid}\n\n dataContent: ${dataContent}\n\n typeu: ${typeu}`
+			`${message || ''} fp: ${fingerPrintOfProtocal}\n userid: ${userid}\n dataContent: ${dataContent}\n typeu: ${typeu} \n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n`
 		);
 	}
 
 	function onTransErrorCB(params) {
 		const { errorCode, errorMsg } = params;
-		setError(`errorCode: ${errorCode}\n\n errorMsg:${errorMsg}`);
+		setError(`errorCode: ${errorCode}\n errorMsg:${errorMsg}`);
 	}
 
 	function handleMessageLost(lostMsgs: Array<object>) {
@@ -60,7 +65,7 @@ const Demo = () => {
 	}
 
 	return (
-		<div>
+		<div className={styles.demo}>
 			{/* <h1>组件预览：</h1> */}
 			from: <input type="text" id="from" defaultValue="1" ref={from} />
 			<br />
@@ -70,19 +75,27 @@ const Demo = () => {
 				content: <input type="text" id="content" ref={content} />
 				<br />
 				<input
-				type="button"
-				value="发送"
-				onClick={() => {
-					manager.send(content.current.value, from.current.value, to.current.value, true);
-				}}
-			/>
+					type="button"
+					value="发送"
+					onClick={() => {
+						manager.send(content.current.value, from.current.value, to.current.value, true, null, null, code => {
+							if (code === 0) {
+								content.current.value = "";
+							}
+						});
+					}}
+				/>
 			</>}
 			{status === null && (
 				<input
 					type="button"
 					value="登陆"
 					onClick={() => {
-						manager.login(from.current.value, 'token');
+						manager.login(from.current.value, 'token', null, code=>{
+							if(code !== 0){
+								alert('登陆失败，请重试');
+							}
+						});
 					}}
 				/>
 			)}
@@ -92,10 +105,11 @@ const Demo = () => {
 					value="注销"
 					onClick={() => {
 						manager.logout();
+						setStatus(null);
 					}}
 				/>
 			)}
-			
+
 			<br />
 			{<h3>{status || ''}</h3>}
 			<br />

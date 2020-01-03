@@ -1,12 +1,14 @@
 import ErrorCode from '../base/ErrorCode';
 import IChatTransDataEvent from './inteface/IChatTransDataEvent';
+import { ChatTransDataCB } from '../index.d';
 
 export default class ChatTransDataEventImpl implements IChatTransDataEvent {
     private static TAG: string = "ChatTransDataEventImpl";
     private onTransBufferCB: (params: object) => void = null;
     private onTransErrorCB: (params: object) => void = null;
 
-    constructor(onTransBufferCB?: (params: object)=>void, onTransErrorCB?: (params: object)=> void){
+    constructor(options?: ChatTransDataCB) {
+        const { onTransBufferCB, onTransErrorCB } = options;
         this.onTransBufferCB = onTransBufferCB;
         this.onTransErrorCB = onTransErrorCB;
     }

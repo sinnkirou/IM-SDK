@@ -4,14 +4,7 @@ import ChatTransDataEventImpl from './events/ChatTransDataEventImpl';
 import MessageQoSEventImpl from './events/MessageQoSEventImpl';
 import { SendCommonDataAsync, SendLoginDataAsync, SendLogoutDataAsync } from './core/LocalWSDataSender';
 import ProtocalFactory from './base/ProtocalFactory';
-
-interface Options {
-	wsUrl: string,
-	wsProtocal?: string,
-	chatbaseEventImpl: ChatBaseEventImpl,
-	chatTransDataEventImpl: ChatTransDataEventImpl,
-	messageQoSEventImpl: MessageQoSEventImpl,
-}
+import { WSOptions } from './index.d';
 
 export default class IMClientManager {
 	private static TAG: string = 'IMClientManager';
@@ -28,7 +21,7 @@ export default class IMClientManager {
 	//
 	private messageQoSListener: MessageQoSEventImpl = null;
 
-	public static getInstance(options: Options): IMClientManager {
+	public static getInstance(options: WSOptions): IMClientManager {
 		if (IMClientManager.instance == null ) {
 			const { wsUrl, } = options;
 			if(wsUrl){
@@ -40,11 +33,11 @@ export default class IMClientManager {
 		return IMClientManager.instance;
 	}
 
-	constructor(options: Options) {
+	constructor(options: WSOptions) {
 		this.initMobileIMSDK(options);
 	}
 
-	public initMobileIMSDK(options: Options): void {
+	public initMobileIMSDK(options: WSOptions): void {
 		if (!this.init) {
 			// 设置AppKey
 			// ConfigEntity.appKey = "5418023dfd98c579b6001741";
@@ -61,13 +54,13 @@ export default class IMClientManager {
 			//	    	ClientCoreSDK.DEBUG = false;
 
 			// 【特别注意】请确保首先进行核心库的初始化（这是不同于iOS和Java端的地方)
-			const { wsUrl, wsProtocal, chatbaseEventImpl, chatTransDataEventImpl, messageQoSEventImpl } = options;
+			const { wsUrl, wsProtocal, chatBaseCB, chatTransDataCB, messageQoSCB} = options;
 			ClientCoreSDK.getInstance().init(wsUrl, wsProtocal);
 
 			// 设置事件回调
-			this.baseEventListener = chatbaseEventImpl;
-			this.transDataListener = chatTransDataEventImpl;
-			this.messageQoSListener = messageQoSEventImpl;
+			this.baseEventListener = new ChatBaseEventImpl(chatBaseCB);
+			this.transDataListener = new ChatTransDataEventImpl(chatTransDataCB);
+			this.messageQoSListener = new MessageQoSEventImpl(messageQoSCB);
 			ClientCoreSDK.getInstance().setChatBaseEvent(this.baseEventListener);
 			ClientCoreSDK.getInstance().setChatTransDataEvent(this.transDataListener);
 			ClientCoreSDK.getInstance().setMessageQoSEvent(this.messageQoSListener);
@@ -114,10 +107,4 @@ export default class IMClientManager {
         new SendCommonDataAsync(ProtocalFactory.createCommonData(dataContent, from_user_id, to_user_id, Qos, fingerPrint, typeu)).exceute(callBack);
 	}
 	
-}
-
-export const Events = {
-	ChatBaseEventImpl,
-	ChatTransDataEventImpl,
-	MessageQoSEventImpl,
 }
