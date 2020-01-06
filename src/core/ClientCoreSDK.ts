@@ -11,7 +11,7 @@ import Logger from '../utils/Logger';
 
 export default class ClientCoreSDK {
     private static TAG: string = 'ClientCoreSDK';
-    public static DEBUG: boolean = true;
+    public static DEBUG: boolean = false;
     public static autoReLogin: boolean = true;
     private static instance: ClientCoreSDK = null;
     private _init: boolean = false;
@@ -24,28 +24,21 @@ export default class ClientCoreSDK {
     private chatBaseEvent: ChatBaseEvent = null;
     private chatTransDataEvent: ChatTransDataEvent = null;
     private messageQoSEvent: MessageQoSEvent = null;
-    // private Context context = null;
-    // private final BroadcastReceiver networkConnectionStatusBroadcastReceiver = new BroadcastReceiver() {
-    //     public void onReceive(Context context, Intent intent) {
-    //         ConnectivityManager connectMgr = (ConnectivityManager)context.getSystemService("connectivity");
-    //         NetworkInfo mobNetInfo = connectMgr.getNetworkInfo(0);
-    //         NetworkInfo wifiNetInfo = connectMgr.getNetworkInfo(1);
-    //         NetworkInfo ethernetInfo = connectMgr.getNetworkInfo(9);
-    //         if ((mobNetInfo == null || !mobNetInfo.isConnected()) && (wifiNetInfo == null || !wifiNetInfo.isConnected()) && (ethernetInfo == null || !ethernetInfo.isConnected())) {
-    //             Log.e(ClientCoreSDK.TAG, "【IMCORE】【本地网络通知】检测本地网络连接断开了!");
-    //             ClientCoreSDK.this.localDeviceNetworkOk = false;
-    //             LocalWSProvider.getInstance().closeLocalWebSocket();
-    //         } else {
-    //             if (ClientCoreSDK.DEBUG) {
-    //                 Log.e(ClientCoreSDK.TAG, "【IMCORE】【本地网络通知】检测本地网络已连接上了!");
-    //             }
+    private networkConnectionStatusBroadcastReceiver: EventListenerOrEventListenerObject = (e) => {
+        const { type } = e;
+        if (type === 'offline') {
+            Logger.error(ClientCoreSDK.TAG, "【IMCORE】【本地网络通知】检测本地网络连接断开了!");
+            this.localDeviceNetworkOk = false;
+            LocalWSProvider.getInstance().closeLocalWebSocket();
+        } else {
+            if (ClientCoreSDK.DEBUG) {
+                Logger.error(ClientCoreSDK.TAG, "【IMCORE】【本地网络通知】检测本地网络已连接上了!");
+            }
 
-    //             ClientCoreSDK.this.localDeviceNetworkOk = true;
-    //             LocalWSProvider.getInstance().closeLocalWebSocket();
-    //         }
-
-    //     }
-    // };
+            this.localDeviceNetworkOk = true;
+            LocalWSProvider.getInstance().closeLocalWebSocket();
+        }
+    };
 
     public static getInstance(): ClientCoreSDK {
         if (ClientCoreSDK.instance == null) {
@@ -55,11 +48,10 @@ export default class ClientCoreSDK {
         return ClientCoreSDK.instance;
     }
 
-    public init(wsUrl: string, wsProtocal?: string):void {
+    public init(wsUrl: string, wsProtocal?: string): void {
         if (!this._init) {
             LocalWSProvider.getInstance(wsUrl, wsProtocal);
-            // this.context.registerReceiver(this.networkConnectionStatusBroadcastReceiver, intentFilter);
-            this.registerReceiver();
+            this.registerReceiver(this.networkConnectionStatusBroadcastReceiver);
             AutoReLoginDaemon.getInstance();
             KeepAliveDaemon.getInstance();
             LocalWSDataReciever.getInstance();
@@ -81,7 +73,7 @@ export default class ClientCoreSDK {
         QoS4ReciveDaemon.getInstance().clear();
 
         try {
-            // this.context.unregisterReceiver(this.networkConnectionStatusBroadcastReceiver);
+            this.unregisterReceiver(this.networkConnectionStatusBroadcastReceiver);
         } catch {
             Logger.info(ClientCoreSDK.TAG, "还未注册android网络事件广播的监听器，本次取消注册已被正常忽略哦.");
         }
@@ -150,27 +142,35 @@ export default class ClientCoreSDK {
         return this.chatBaseEvent;
     }
 
-    public setChatTransDataEvent( chatTransDataEvent: ChatTransDataEvent): void {
+    public setChatTransDataEvent(chatTransDataEvent: ChatTransDataEvent): void {
         this.chatTransDataEvent = chatTransDataEvent;
     }
 
-    public  getChatTransDataEvent(): ChatTransDataEvent {
+    public getChatTransDataEvent(): ChatTransDataEvent {
         return this.chatTransDataEvent;
     }
 
-    public setMessageQoSEvent( messageQoSEvent: MessageQoSEvent):void {
+    public setMessageQoSEvent(messageQoSEvent: MessageQoSEvent): void {
         this.messageQoSEvent = messageQoSEvent;
     }
 
-    public  getMessageQoSEvent():MessageQoSEvent {
+    public getMessageQoSEvent(): MessageQoSEvent {
         return this.messageQoSEvent;
     }
 
-    private registerReceiver(): void {
+    private registerReceiver(networkConnectionStatusBroadcastReceiver: EventListenerOrEventListenerObject): void {
         let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
-        localWSSocket.onerror = function (event){
+        localWSSocket.onerror = (event) => {
             Logger.error(ClientCoreSDK.TAG, 'WS检测到异常', null, event);
-            LocalWSProvider.getInstance().closeLocalWebSocket();
         }
+        window.addEventListener("online", networkConnectionStatusBroadcastReceiver);
+        window.addEventListener("offline", networkConnectionStatusBroadcastReceiver);
+    }
+
+    private unregisterReceiver(networkConnectionStatusBroadcastReceiver: EventListenerOrEventListenerObject): void {
+        let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
+        localWSSocket.onerror = null;
+        window.removeEventListener("online", networkConnectionStatusBroadcastReceiver);
+        window.removeEventListener("offline", networkConnectionStatusBroadcastReceiver);
     }
 }

@@ -111,10 +111,8 @@ export default class QoS4SendDaemon {
                         }
                     }
 
-                    // return lostMessages;
                 } catch (var7) {
                     Logger.warn(QoS4SendDaemon.TAG, '【IMCORE】【QoS】消息发送质量保证线程运行时发生异常,' + var7.getMessage(), var7);
-                    // return lostMessages;
                 }
 
                 if (lostMessages != null && lostMessages.length > 0) {
@@ -122,13 +120,6 @@ export default class QoS4SendDaemon {
                 }
 
             };
-            // protected void onPostExecute(ArrayList<Protocal> al) {
-            //     if (al != null && al.size() > 0) {
-            //         QoS4SendDaemon.this.notifyMessageLost(al);
-            //     }
-
-            //     QoS4SendDaemon.this.handler.postDelayed(QoS4SendDaemon.this.runnable, 5000L);
-            // }
 
             this.reRunProcess = new MockThread(doInBackgound, QoS4SendDaemon.CHECH_INTERVAL);
 
@@ -144,14 +135,11 @@ export default class QoS4SendDaemon {
     }
 
     public startup(immediately: boolean): void {
-        // this.stop();
-        // this.handler.postDelayed(this.runnable, immediately ? 0L : 5000L);
         this.reRunProcess.start(immediately);
         this.running = true;
     }
 
     public stop(): void {
-        // this.handler.removeCallbacks(this.runnable);
         this.reRunProcess.stop();
         this.running = false;
     }

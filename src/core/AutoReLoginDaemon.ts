@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import ClientCoreSDK from './ClientCoreSDK';
 import LocalWSDataSender from './LocalWSDataSender';
 import LocalWSDataReciever from './LocalWSDataReciever';
@@ -10,7 +9,6 @@ export default class AutoReLoginDaemon {
     private static instance: AutoReLoginDaemon = null;
     public static AUTO_RE$LOGIN_INTERVAL: number = 2000;
     private autoReLoginRunning: boolean = false;
-    // private _excuting: boolean = false;
     private init: boolean = false;
     private reRunProcess: MockThread = null;
 
@@ -45,16 +43,12 @@ export default class AutoReLoginDaemon {
     }
 
     public stop(): void {
-        // this.handler.removeCallbacks(this.runnable);
         this.reRunProcess.stop();
         this.autoReLoginRunning = false;
     }
 
     public start(immediately: boolean): void {
-        // this.stop();
         this.reRunProcess.start(immediately);
-        // this.handler.postDelayed(this.runnable, immediately ? 0L : (long)AUTO_RE$LOGIN_INTERVAL);
-
         this.autoReLoginRunning = true;
     }
 

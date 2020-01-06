@@ -13,12 +13,7 @@ export default class KeepAliveDaemon {
     public static KEEP_ALIVE_INTERVAL: number = 20000;
     private keepAliveRunning: boolean = false;
     private lastGetKeepAliveResponseFromServerTimstamp: number = 0;
-    // private Observer networkConnectionLostObserver = null;
-    // private Handler handler = null;
-    // private Runnable runnable = null;
-    // private _excuting: boolean = false;
     private init: boolean = false;
-    // private Context context = null;
     private reRunProcess: MockThread = null;
 
     public static getInstance(): KeepAliveDaemon {
@@ -30,7 +25,6 @@ export default class KeepAliveDaemon {
     }
 
     constructor() {
-        // this.context = context;
         this.initialize();
     }
 
@@ -58,9 +52,6 @@ export default class KeepAliveDaemon {
                                 KeepAliveDaemon.NETWORK_CONNECTION_TIME_OUT
                             ) {
                                 this.stop();
-                                // if (KeepAliveDaemon.this.networkConnectionLostObserver != null) {
-                                //     KeepAliveDaemon.this.networkConnectionLostObserver.update((Observable)null, (Object)null);
-                                // }
                                 LocalWSProvider.getInstance().closeLocalWebSocket();
                                 QoS4ReciveDaemon.getInstance().stop();
                                 ClientCoreSDK.getInstance().setConnectedToServer(false);
@@ -80,16 +71,13 @@ export default class KeepAliveDaemon {
     }
 
     public stop(): void {
-        // this.handler.removeCallbacks(this.runnable);
         this.reRunProcess.stop();
         this.keepAliveRunning = false;
         this.lastGetKeepAliveResponseFromServerTimstamp = 0;
     }
 
     public start(immediately: boolean): void {
-        // this.stop();
         this.reRunProcess.start(immediately);
-        // this.handler.postDelayed(this.runnable, immediately ? 0L : (long)KEEP_ALIVE_INTERVAL);
         this.keepAliveRunning = true;
     }
 
@@ -104,8 +92,4 @@ export default class KeepAliveDaemon {
     public updateGetKeepAliveResponseFromServerTimstamp(): void {
         this.lastGetKeepAliveResponseFromServerTimstamp = new Date().getTime();
     }
-
-    // public void setNetworkConnectionLostObserver(Observer networkConnectionLostObserver) {
-    //     this.networkConnectionLostObserver = networkConnectionLostObserver;
-    // }
 }

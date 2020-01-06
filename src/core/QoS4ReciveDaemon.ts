@@ -63,7 +63,6 @@ export default class QoS4ReciveDaemon {
     }
 
     public startup(immediately: boolean): void {
-        // this.stop();
         if (this.recievedMessages != null && this.recievedMessages.size > 0) {
             for (let key of this.recievedMessages.keys()) {
                 this.putImpl(key);
@@ -75,7 +74,6 @@ export default class QoS4ReciveDaemon {
     }
 
     public stop(): void {
-        // this.handler.removeCallbacks(this.runnable);
         this.reRunProcess.stop();
         this.running = false;
     }

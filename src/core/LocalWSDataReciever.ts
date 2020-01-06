@@ -35,10 +35,8 @@ export default class LocalWSDataReciever {
     }
 
     public stop(): void {
-        // if (this.thread != null) {
-        //     this.thread.interrupt();
-        //     this.thread = null;
-        // }
+        let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
+        localWSSocket.onmessage = null;
     }
 
     public startup(): void {
@@ -64,9 +62,8 @@ export default class LocalWSDataReciever {
     private udpListeningImpl(): void {
         let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
         if (localWSSocket != null && localWSSocket.readyState === localWSSocket.OPEN) {
-            let _this = this;
-            localWSSocket.onmessage = function (event) {
-                _this.messageHandler.handleMessage(event);
+            localWSSocket.onmessage =  (event)=> {
+                this.messageHandler.handleMessage(event);
             }
         }
     }
@@ -124,15 +121,6 @@ export class MessageHandler {
                         if (loginInfoRes.getCode() == 0) {
                             ClientCoreSDK.getInstance().setLoginHasInit(true);
                             AutoReLoginDaemon.getInstance().stop();
-                            // KeepAliveDaemon.getInstance().setNetworkConnectionLostObserver(new Observer() {
-                            //     public void update(Observable observable, Object data) {
-                            //         LocalWSProvider.getInstance().closeLocalWSSocket();
-                            //         QoS4ReciveDaemon.getInstance().stop();
-                            //         ClientCoreSDK.getInstance().setConnectedToServer(false);
-                            //         ClientCoreSDK.getInstance().getChatBaseEvent().onLinkCloseMessage(-1);
-                            //         AutoReLoginDaemon.getInstance().start(true);
-                            //     }
-                            // });
                             KeepAliveDaemon.getInstance().start(false);
                             QoS4SendDaemon.getInstance().startup(true);
                             QoS4ReciveDaemon.getInstance().startup(true);

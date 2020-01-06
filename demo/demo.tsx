@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDom from 'react-dom';
 import styles from './index.less';
-import Manager from '../src/index';
-// import Manager from '../dist/index';
+// import Manager from '../src/index';
+import Manager from '../dist/index';
+import moment from 'moment';
 
 const Demo = () => {
 	const [status, setStatus] = useState(null);
@@ -45,9 +46,15 @@ const Demo = () => {
 	}
 
 	function onTransBufferCB(params) {
-		const { fingerPrintOfProtocal, userid, dataContent, typeu } = params;
+		const { fingerPrintOfProtocal, userid, dataContent, typeu, sendTs } = params;
 		setMessage(
-			`${message || ''} fp: ${fingerPrintOfProtocal}\n userid: ${userid}\n dataContent: ${dataContent}\n typeu: ${typeu} \n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n`
+			`${message || ''}
+			fp: ${fingerPrintOfProtocal}\n
+			userid: ${userid}\n
+			dataContent: ${dataContent}\n
+			typeu: ${typeu}\n
+			sendToTs: ${moment(sendTs)}\n
+			>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n`
 		);
 	}
 
@@ -81,6 +88,8 @@ const Demo = () => {
 						manager.send(content.current.value, from.current.value, to.current.value, true, null, null, code => {
 							if (code === 0) {
 								content.current.value = "";
+							} else {
+								setStatus(`发送失败，code：${code}`)
 							}
 						});
 					}}

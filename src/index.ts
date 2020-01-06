@@ -4,14 +4,14 @@ import ChatTransDataEventImpl from './events/ChatTransDataEventImpl';
 import MessageQoSEventImpl from './events/MessageQoSEventImpl';
 import { SendCommonDataAsync, SendLoginDataAsync, SendLogoutDataAsync } from './core/LocalWSDataSender';
 import ProtocalFactory from './base/ProtocalFactory';
-import {ChatBaseCB, ChatTransDataCB, MessageQoSCB } from './events/inteface/IEventCallBack';
+import { ChatBaseCB, ChatTransDataCB, MessageQoSCB } from './events/inteface/IEventCallBack';
 
 interface WSOptions {
-    wsUrl: string,
-    wsProtocal?: string,
-    chatBaseCB?: ChatBaseCB,
-    chatTransDataCB?: ChatTransDataCB,
-    messageQoSCB?: MessageQoSCB,
+	wsUrl: string,
+	wsProtocal?: string,
+	chatBaseCB?: ChatBaseCB,
+	chatTransDataCB?: ChatTransDataCB,
+	messageQoSCB?: MessageQoSCB,
 }
 
 export default class IMClientManager {
@@ -30,11 +30,11 @@ export default class IMClientManager {
 	private messageQoSListener: MessageQoSEventImpl = null;
 
 	public static getInstance(options: WSOptions): IMClientManager {
-		if (IMClientManager.instance == null ) {
+		if (IMClientManager.instance == null) {
 			const { wsUrl, } = options;
-			if(wsUrl){
+			if (wsUrl) {
 				IMClientManager.instance = new IMClientManager(options)
-			}else{
+			} else {
 				throw new Error("wsURL 参数不可为空");
 			}
 		};
@@ -62,7 +62,7 @@ export default class IMClientManager {
 			//	    	ClientCoreSDK.DEBUG = false;
 
 			// 【特别注意】请确保首先进行核心库的初始化（这是不同于iOS和Java端的地方)
-			const { wsUrl, wsProtocal, chatBaseCB, chatTransDataCB, messageQoSCB} = options;
+			const { wsUrl, wsProtocal, chatBaseCB, chatTransDataCB, messageQoSCB } = options;
 			ClientCoreSDK.getInstance().init(wsUrl, wsProtocal);
 
 			// 设置事件回调
@@ -104,15 +104,15 @@ export default class IMClientManager {
 		return this.messageQoSListener;
 	}
 
-	public login (logiUserId: string, loginToken: string, extra?: string, callBack?: (code: number) => void): void {
-        new SendLoginDataAsync(logiUserId, loginToken, extra).exceute(callBack)
+	public login(logiUserId: string, loginToken: string, extra?: string, callBack?: (code: number) => void): void {
+		new SendLoginDataAsync(logiUserId, loginToken, extra).exceute(callBack)
 	}
-	
-    public logout (callBack?: (code: number) => void):void {
-        new SendLogoutDataAsync().exceute(callBack);
-    }
-    public send (dataContent: string, from_user_id: string, to_user_id: string, Qos?: boolean, fingerPrint?: string, typeu: number = 0, callBack?: (code: number) => void): void {
-        new SendCommonDataAsync(ProtocalFactory.createCommonData(dataContent, from_user_id, to_user_id, Qos, fingerPrint, typeu)).exceute(callBack);
+
+	public logout(callBack?: (code: number) => void): void {
+		new SendLogoutDataAsync().exceute(callBack);
 	}
-	
+	public send(dataContent: string, from_user_id: string, to_user_id: string, Qos?: boolean, fingerPrint?: string, typeu: number = 0, callBack?: (code: number) => void): void {
+		new SendCommonDataAsync(ProtocalFactory.createCommonData(dataContent, from_user_id, to_user_id, Qos, fingerPrint, typeu)).exceute(callBack);
+	}
+
 }

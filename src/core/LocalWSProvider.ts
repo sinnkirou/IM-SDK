@@ -52,7 +52,7 @@ export default class LocalWSProvider {
                 Logger.debug(LocalWSProvider.TAG, "【IMCORE】正在closeLocalWebSocket()...");
             }
 
-            if (this.localWebSocket != null) {
+            if (this.localWebSocket != null && this.localWebSocket.readyState === this.localWebSocket.OPEN) {
                 this.localWebSocket.close();
                 this.localWebSocket = null;
             } else if (!silent) {
@@ -60,13 +60,13 @@ export default class LocalWSProvider {
             }
         } catch (var3) {
             if (!silent) {
-                Logger.warn(LocalWSProvider.TAG, "【IMCORE】lcloseLocalWebSocket时出错，原因是：" + var3.getMessage(), var3);
+                Logger.warn(LocalWSProvider.TAG, "【IMCORE】closeLocalWebSocket时出错，原因是：" + var3.getMessage(), var3);
             }
         }
 
     }
 
     public getURL() :string {
-        return this.wsUrl;
+        return this.localWebSocket.url;
     }
 }
