@@ -7,7 +7,7 @@ import MockThread from '../utils/MockThread';
 import Logger from '../utils/Logger';
 
 export default class KeepAliveDaemon {
-    private static TAG: string = 'KeepAliveDaemon';
+    private static TAG: string = KeepAliveDaemon.name;
     private static instance: KeepAliveDaemon = null;
     public static NETWORK_CONNECTION_TIME_OUT: number = 10000;
     public static KEEP_ALIVE_INTERVAL: number = 20000;

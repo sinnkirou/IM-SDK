@@ -8,7 +8,7 @@ import QoS4SendDaemon from './QoS4SendDaemon';
 import Logger from '../utils/Logger';
 
 export default class LocalWSDataSender {
-	public static TAG: string = 'LocalWSDataSender';
+	public static TAG: string = LocalWSDataSender.name;
 	private static instance: LocalWSDataSender = null;
 
 	public static getInstance(): LocalWSDataSender {

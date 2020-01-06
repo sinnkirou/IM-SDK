@@ -10,7 +10,7 @@ import { SendCommonDataAsync } from './LocalWSDataSender';
 import Logger from '../utils/Logger';
 
 export default class LocalWSDataReciever {
-    static TAG: string = "LocalWSDataReciever";
+    static TAG: string = LocalWSDataReciever.name;
     private static instance: LocalWSDataReciever = null;
     private messageHandler: MessageHandler = null;
     private init: boolean = false;
@@ -36,7 +36,8 @@ export default class LocalWSDataReciever {
 
     public stop(): void {
         let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
-        localWSSocket.onmessage = null;
+        if(localWSSocket)
+            localWSSocket.onerror = null;
     }
 
     public startup(): void {

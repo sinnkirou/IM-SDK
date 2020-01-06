@@ -4,7 +4,7 @@ import { MessageQoSCB } from './inteface/IEventCallBack';
 import Logger from '../utils/Logger';
 
 export default class MessageQoSEventImpl implements IMessageQoSEvent {
-    private static TAG: string = 'MessageQoSEventImpl';
+    private static TAG: string = MessageQoSEventImpl.name;
     private handleMessageLost: (messages: Array<object>) => void = null;
     private messagesBeReceivedCB: (fingerPrint: string) => void = null;
 

@@ -10,8 +10,8 @@ import MessageQoSEvent from '../events/inteface/IMessageQoSEvent';
 import Logger from '../utils/Logger';
 
 export default class ClientCoreSDK {
-    private static TAG: string = 'ClientCoreSDK';
-    public static DEBUG: boolean = false;
+    private static TAG: string = ClientCoreSDK.name;
+    public static DEBUG: boolean = true;
     public static autoReLogin: boolean = true;
     private static instance: ClientCoreSDK = null;
     private _init: boolean = false;
@@ -63,7 +63,9 @@ export default class ClientCoreSDK {
     }
 
     public release(): void {
-        LocalWSProvider.getInstance().closeLocalWebSocket();
+        setTimeout(() => {
+            LocalWSProvider.getInstance().closeLocalWebSocket();
+        }, 500);
         AutoReLoginDaemon.getInstance().stop();
         QoS4SendDaemon.getInstance().stop();
         KeepAliveDaemon.getInstance().stop();
@@ -169,7 +171,8 @@ export default class ClientCoreSDK {
 
     private unregisterReceiver(networkConnectionStatusBroadcastReceiver: EventListenerOrEventListenerObject): void {
         let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
-        localWSSocket.onerror = null;
+        if(localWSSocket)
+            localWSSocket.onerror = null;
         window.removeEventListener("online", networkConnectionStatusBroadcastReceiver);
         window.removeEventListener("offline", networkConnectionStatusBroadcastReceiver);
     }

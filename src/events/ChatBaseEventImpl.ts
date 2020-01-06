@@ -3,7 +3,7 @@ import {ChatBaseCB, } from './inteface/IEventCallBack';
 import Logger from '../utils/Logger';
 
 export default class ChatBaseEventImpl implements IChatBaseEvent {
-	private static TAG: string = "ChatBaseEventImpl";
+	private static TAG: string = ChatBaseEventImpl.name;
 	private onLoginOrReloginSuccessCB: () => void = null;
 	private onLoginOrReloginFailCB: () => void = null;
 	private onLinkCloseMessageCB: () => void = null;

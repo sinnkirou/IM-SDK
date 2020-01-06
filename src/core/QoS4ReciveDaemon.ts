@@ -4,7 +4,7 @@ import MockThread from '../utils//MockThread';
 import Logger from '../utils/Logger';
 
 export default class QoS4ReciveDaemon {
-    private static TAG: string = 'QoS4ReciveDaemon';
+    private static TAG: string = QoS4ReciveDaemon.name;
     private static instance: QoS4ReciveDaemon = null;
     public static CHECH_INTERVAL: number = 300000;
     public static MESSAGES_VALID_TIME: number = 600000;

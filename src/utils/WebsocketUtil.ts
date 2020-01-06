@@ -1,7 +1,7 @@
 import Logger from './Logger';
 
 export default class WebsocketUtil {
-    private static TAG: string = "WebsocketUtil";
+    private static TAG: string = WebsocketUtil.name;
 
     constructor() {
     }

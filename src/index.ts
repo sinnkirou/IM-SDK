@@ -15,7 +15,7 @@ interface WSOptions {
 }
 
 export default class IMClientManager {
-	private static TAG: string = 'IMClientManager';
+	private static TAG: string = IMClientManager.name;
 
 	private static instance: IMClientManager = null;
 

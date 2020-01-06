@@ -5,7 +5,7 @@ import MockThread from '../utils/MockThread';
 import Logger from '../utils/Logger';
 
 export default class AutoReLoginDaemon {
-    private static TAG: string = 'AutoReLoginDaemon';
+    private static TAG: string = AutoReLoginDaemon.name;
     private static instance: AutoReLoginDaemon = null;
     public static AUTO_RE$LOGIN_INTERVAL: number = 2000;
     private autoReLoginRunning: boolean = false;

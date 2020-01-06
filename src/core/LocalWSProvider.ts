@@ -2,17 +2,17 @@ import ClientCoreSDK from './ClientCoreSDK';
 import Logger from '../utils/Logger';
 
 export default class LocalWSProvider {
-    private static TAG:string = "LocalWSProvider";
+    private static TAG: string = LocalWSProvider.name;
     private static instance: LocalWSProvider = null;
     private localWebSocket: WebSocket = null;
     private wsUrl: string = null;
     private wsProtocal: string = null;
 
-    public static getInstance(wsUrl?: string, wsProtocal?: string):LocalWSProvider {
+    public static getInstance(wsUrl?: string, wsProtocal?: string): LocalWSProvider {
         if (LocalWSProvider.instance == null) {
-            if(!wsUrl){
+            if (!wsUrl) {
                 throw new Error("localWebSocket未初始化");
-            }else {
+            } else {
                 LocalWSProvider.instance = new LocalWSProvider(wsUrl, wsProtocal);
             }
         }
@@ -24,9 +24,9 @@ export default class LocalWSProvider {
         this.wsUrl = wsUrl;
         this.wsProtocal = wsProtocal;
         this.localWebSocket = new WebSocket(wsUrl, wsProtocal);
-      }
+    }
 
-    public resetLocalWebSocket():WebSocket {
+    public resetLocalWebSocket(): WebSocket {
         try {
             this.closeLocalWebSocket();
             this.localWebSocket = new WebSocket(this.wsUrl, this.wsProtocal);
@@ -38,8 +38,11 @@ export default class LocalWSProvider {
         }
     }
 
-    private isLocalWebSocketReady():boolean {
-        return this.localWebSocket != null && this.localWebSocket.readyState === this.localWebSocket.OPEN;
+    private isLocalWebSocketReady(): boolean {
+        return this.localWebSocket != null && (
+            this.localWebSocket.readyState === this.localWebSocket.OPEN ||
+            this.localWebSocket.readyState === this.localWebSocket.CONNECTING
+        );
     }
 
     public getLocalWebSocket(): WebSocket {
@@ -66,7 +69,7 @@ export default class LocalWSProvider {
 
     }
 
-    public getURL() :string {
+    public getURL(): string {
         return this.localWebSocket.url;
     }
 }

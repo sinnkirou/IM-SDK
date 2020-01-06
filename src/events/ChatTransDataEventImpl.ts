@@ -4,7 +4,7 @@ import { ChatTransDataCB, } from './inteface/IEventCallBack';
 import Logger from '../utils/Logger';
 
 export default class ChatTransDataEventImpl implements IChatTransDataEvent {
-    private static TAG: string = "ChatTransDataEventImpl";
+    private static TAG: string = ChatTransDataEventImpl.name;
     private onTransBufferCB: (params: object) => void = null;
     private onTransErrorCB: (params: object) => void = null;
 

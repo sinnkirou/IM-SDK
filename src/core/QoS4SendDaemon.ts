@@ -5,7 +5,7 @@ import { SendCommonDataAsync } from '../core/LocalWSDataSender';
 import Logger from '../utils/Logger';
 
 export default class QoS4SendDaemon {
-    private static TAG: string = 'QoS4SendDaemon';
+    private static TAG: string = QoS4SendDaemon.name;
     private static instance: QoS4SendDaemon = null;
     public static CHECH_INTERVAL: number = 5000;
     public static MESSAGES_JUST$NOW_TIME: number = 3000;
