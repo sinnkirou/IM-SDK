@@ -24,6 +24,8 @@ export default class LocalWSProvider {
         this.wsUrl = wsUrl;
         this.wsProtocal = wsProtocal;
         this.localWebSocket = new WebSocket(wsUrl, wsProtocal);
+        // @ts-ignore
+        // window.ws = this.localWebSocket;
     }
 
     public resetLocalWebSocket(): WebSocket {
