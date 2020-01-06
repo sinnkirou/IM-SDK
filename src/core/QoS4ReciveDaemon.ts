@@ -1,6 +1,7 @@
 import ClientCoreSDK from './ClientCoreSDK';
 import Protocal from '../base/Protocal';
 import MockThread from '../utils//MockThread';
+import Logger from '../utils/Logger';
 
 export default class QoS4ReciveDaemon {
     private static TAG: string = 'QoS4ReciveDaemon';
@@ -28,7 +29,7 @@ export default class QoS4ReciveDaemon {
         if (!this.init) {
             let doInBackground = () => {
                 if (ClientCoreSDK.DEBUG) {
-                    console.debug(
+                    Logger.debug(
                         QoS4ReciveDaemon.TAG,
                         '【IMCORE】【QoS接收方】++++++++++ START 暂存处理线程正在运行中，当前长度' + this.recievedMessages.size + '.'
                     );
@@ -38,7 +39,7 @@ export default class QoS4ReciveDaemon {
                     let delta: number = new Date().getTime() - this.recievedMessages.get(key);
                     if (delta >= QoS4ReciveDaemon.MESSAGES_VALID_TIME) {
                         if (ClientCoreSDK.DEBUG) {
-                            console.debug(
+                            Logger.debug(
                                 QoS4ReciveDaemon.TAG,
                                 '【IMCORE】【QoS接收方】指纹为' + key + '的包已生存' + delta + 'ms(最大允许' + QoS4ReciveDaemon.MESSAGES_VALID_TIME + 'ms), 马上将删除之.'
                             );
@@ -49,7 +50,7 @@ export default class QoS4ReciveDaemon {
                 }
 
                 if (ClientCoreSDK.DEBUG) {
-                    console.debug(
+                    Logger.debug(
                         QoS4ReciveDaemon.TAG,
                         '【IMCORE】【QoS接收方】++++++++++ END 暂存处理线程正在运行中，当前长度' + this.recievedMessages.size + '.'
                     );
@@ -95,10 +96,10 @@ export default class QoS4ReciveDaemon {
 
     public addRecievedWithFp(fingerPrintOfProtocal: string): void {
         if (fingerPrintOfProtocal == null) {
-            console.warn(QoS4ReciveDaemon.TAG, '【IMCORE】无效的 fingerPrintOfProtocal==null!');
+            Logger.warn(QoS4ReciveDaemon.TAG, '【IMCORE】无效的 fingerPrintOfProtocal==null!');
         } else {
             if (this.recievedMessages.get(fingerPrintOfProtocal)) {
-                console.warn(
+                Logger.warn(
                     QoS4ReciveDaemon.TAG,
                     '【IMCORE】【QoS接收方】指纹为' +
                     fingerPrintOfProtocal +

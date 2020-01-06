@@ -3,6 +3,7 @@ import ClientCoreSDK from './ClientCoreSDK';
 import LocalWSDataSender from './LocalWSDataSender';
 import LocalWSDataReciever from './LocalWSDataReciever';
 import MockThread from '../utils/MockThread';
+import Logger from '../utils/Logger';
 
 export default class AutoReLoginDaemon {
     private static TAG: string = 'AutoReLoginDaemon';
@@ -29,7 +30,7 @@ export default class AutoReLoginDaemon {
         if (!this.init) {
             this.reRunProcess = new MockThread(() => {
                 if (ClientCoreSDK.DEBUG) {
-                    console.log(AutoReLoginDaemon.TAG, "【IMCORE】自动重新登陆线程执行中, autoReLogin?" + ClientCoreSDK.autoReLogin + "...");
+                    Logger.info(AutoReLoginDaemon.TAG, "【IMCORE】自动重新登陆线程执行中, autoReLogin?" + ClientCoreSDK.autoReLogin + "...");
                 }
 
                 if (ClientCoreSDK.autoReLogin) {

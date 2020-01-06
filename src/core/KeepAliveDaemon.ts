@@ -4,6 +4,7 @@ import LocalWSProvider from './LocalWSProvider';
 import QoS4ReciveDaemon from './QoS4ReciveDaemon';
 import AutoReLoginDaemon from './AutoReLoginDaemon';
 import MockThread from '../utils/MockThread';
+import Logger from '../utils/Logger';
 
 export default class KeepAliveDaemon {
     private static TAG: string = 'KeepAliveDaemon';
@@ -39,7 +40,7 @@ export default class KeepAliveDaemon {
                 let willStop: boolean = false;
                 if (!willStop) {
                     if (ClientCoreSDK.DEBUG) {
-                        console.log(KeepAliveDaemon.TAG, '【IMCORE】心跳线程执行中...');
+                        Logger.info(KeepAliveDaemon.TAG, '【IMCORE】心跳线程执行中...');
                     }
 
                     let code: number = LocalWSDataSender.getInstance().sendKeepAlive();

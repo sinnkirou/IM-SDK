@@ -2,6 +2,7 @@ import Protocal from '../base/Protocal';
 import MockThread from '../utils//MockThread';
 import ClientCoreSDK from './ClientCoreSDK';
 import { SendCommonDataAsync } from '../core/LocalWSDataSender';
+import Logger from '../utils/Logger';
 
 export default class QoS4SendDaemon {
     private static TAG: string = 'QoS4SendDaemon';
@@ -34,7 +35,7 @@ export default class QoS4SendDaemon {
 
                 try {
                     if (ClientCoreSDK.DEBUG) {
-                        console.debug(
+                        Logger.debug(
                             QoS4SendDaemon.TAG,
                             '【IMCORE】【QoS】=========== 消息发送质量保证线程运行中, 当前需要处理的列表长度为' + this.sentMessages.size + '...'
                         );
@@ -45,7 +46,7 @@ export default class QoS4SendDaemon {
                         if (p != null && p.isQoS()) {
                             if (p.getRetryCount() >= 2) {
                                 if (ClientCoreSDK.DEBUG) {
-                                    console.debug(
+                                    Logger.debug(
                                         QoS4SendDaemon.TAG,
                                         '【IMCORE】【QoS】指纹为' +
                                         p.getFp() +
@@ -63,7 +64,7 @@ export default class QoS4SendDaemon {
                                 let delta: number = new Date().getTime() - this.sendMessagesTimestamp.get(key);
                                 if (delta <= 3000) {
                                     if (ClientCoreSDK.DEBUG) {
-                                        console.warn(
+                                        Logger.warn(
                                             QoS4SendDaemon.TAG,
                                             '【IMCORE】【QoS】指纹为' +
                                             key +
@@ -79,7 +80,7 @@ export default class QoS4SendDaemon {
                                         if (code == 0) {
                                             p.increaseRetryCount();
                                             if (ClientCoreSDK.DEBUG) {
-                                                console.debug(
+                                                Logger.debug(
                                                     QoS4SendDaemon.TAG,
                                                     '【IMCORE】【QoS】指纹为' +
                                                     p.getFp() +
@@ -91,7 +92,7 @@ export default class QoS4SendDaemon {
                                                 );
                                             }
                                         } else {
-                                            console.warn(
+                                            Logger.warn(
                                                 QoS4SendDaemon.TAG,
                                                 '【IMCORE】【QoS】指纹为' +
                                                 p.getFp() +
@@ -112,7 +113,7 @@ export default class QoS4SendDaemon {
 
                     // return lostMessages;
                 } catch (var7) {
-                    console.warn(QoS4SendDaemon.TAG, '【IMCORE】【QoS】消息发送质量保证线程运行时发生异常,' + var7.getMessage(), var7);
+                    Logger.warn(QoS4SendDaemon.TAG, '【IMCORE】【QoS】消息发送质量保证线程运行时发生异常,' + var7.getMessage(), var7);
                     // return lostMessages;
                 }
 
@@ -169,14 +170,14 @@ export default class QoS4SendDaemon {
 
     public put(p: Protocal): void {
         if (p == null) {
-            console.warn(QoS4SendDaemon.TAG, 'Invalid arg p==null.');
+            Logger.warn(QoS4SendDaemon.TAG, 'Invalid arg p==null.');
         } else if (p.getFp() == null) {
-            console.warn(QoS4SendDaemon.TAG, 'Invalid arg p.getFp() == null.');
+            Logger.warn(QoS4SendDaemon.TAG, 'Invalid arg p.getFp() == null.');
         } else if (!p.isQoS()) {
-            console.warn(QoS4SendDaemon.TAG, 'This protocal is not  pkg, ignore it!');
+            Logger.warn(QoS4SendDaemon.TAG, 'This protocal is not  pkg, ignore it!');
         } else {
             if (this.sentMessages.get(p.getFp()) != null) {
-                console.warn(
+                Logger.warn(
                     QoS4SendDaemon.TAG,
                     '【IMCORE】【QoS】指纹为' + p.getFp() + '的消息已经放入了发送质量保证队列，该消息为何会重复？（生成的指纹码重复？还是重复put？）'
                 );
@@ -191,7 +192,7 @@ export default class QoS4SendDaemon {
         this.sendMessagesTimestamp.delete(fingerPrint);
         const result = this.sentMessages.delete(fingerPrint);
 
-        console.warn(
+        Logger.warn(
             QoS4SendDaemon.TAG,
             '【IMCORE】【QoS】指纹为' + fingerPrint + '的消息已成功从发送质量保证队列中移除(可能是收到接收方的应答也可能是达到了重传的次数上限)'
         );

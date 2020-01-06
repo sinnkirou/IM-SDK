@@ -7,6 +7,7 @@ import KeepAliveDaemon from './KeepAliveDaemon';
 import ChatBaseEvent from '../events/inteface/IChatBaseEvent';
 import ChatTransDataEvent from '../events/inteface/IChatTransDataEvent';
 import MessageQoSEvent from '../events/inteface/IMessageQoSEvent';
+import Logger from '../utils/Logger';
 
 export default class ClientCoreSDK {
     private static TAG: string = 'ClientCoreSDK';
@@ -33,14 +34,14 @@ export default class ClientCoreSDK {
     //         if ((mobNetInfo == null || !mobNetInfo.isConnected()) && (wifiNetInfo == null || !wifiNetInfo.isConnected()) && (ethernetInfo == null || !ethernetInfo.isConnected())) {
     //             Log.e(ClientCoreSDK.TAG, "【IMCORE】【本地网络通知】检测本地网络连接断开了!");
     //             ClientCoreSDK.this.localDeviceNetworkOk = false;
-    //             LocalWSProvider.getInstance().closeLocalWSSocket();
+    //             LocalWSProvider.getInstance().closeLocalWebSocket();
     //         } else {
     //             if (ClientCoreSDK.DEBUG) {
     //                 Log.e(ClientCoreSDK.TAG, "【IMCORE】【本地网络通知】检测本地网络已连接上了!");
     //             }
 
     //             ClientCoreSDK.this.localDeviceNetworkOk = true;
-    //             LocalWSProvider.getInstance().closeLocalWSSocket();
+    //             LocalWSProvider.getInstance().closeLocalWebSocket();
     //         }
 
     //     }
@@ -58,6 +59,7 @@ export default class ClientCoreSDK {
         if (!this._init) {
             LocalWSProvider.getInstance(wsUrl, wsProtocal);
             // this.context.registerReceiver(this.networkConnectionStatusBroadcastReceiver, intentFilter);
+            this.registerReceiver();
             AutoReLoginDaemon.getInstance();
             KeepAliveDaemon.getInstance();
             LocalWSDataReciever.getInstance();
@@ -81,7 +83,7 @@ export default class ClientCoreSDK {
         try {
             // this.context.unregisterReceiver(this.networkConnectionStatusBroadcastReceiver);
         } catch {
-            console.log(ClientCoreSDK.TAG, "还未注册android网络事件广播的监听器，本次取消注册已被正常忽略哦.");
+            Logger.info(ClientCoreSDK.TAG, "还未注册android网络事件广播的监听器，本次取消注册已被正常忽略哦.");
         }
 
         this._init = false;
@@ -162,5 +164,13 @@ export default class ClientCoreSDK {
 
     public  getMessageQoSEvent():MessageQoSEvent {
         return this.messageQoSEvent;
+    }
+
+    private registerReceiver(): void {
+        let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
+        localWSSocket.onerror = function (event){
+            Logger.error(ClientCoreSDK.TAG, 'WS检测到异常', null, event);
+            LocalWSProvider.getInstance().closeLocalWebSocket();
+        }
     }
 }

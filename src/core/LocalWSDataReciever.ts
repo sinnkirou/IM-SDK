@@ -7,6 +7,7 @@ import QoS4SendDaemon from './QoS4SendDaemon';
 import KeepAliveDaemon from './KeepAliveDaemon';
 import AutoReLoginDaemon from './AutoReLoginDaemon';
 import { SendCommonDataAsync } from './LocalWSDataSender';
+import Logger from '../utils/Logger';
 
 export default class LocalWSDataReciever {
     static TAG: string = "LocalWSDataReciever";
@@ -45,13 +46,13 @@ export default class LocalWSDataReciever {
 
         try {
             if (ClientCoreSDK.DEBUG) {
-                console.debug(LocalWSDataReciever.TAG, "【IMCORE】本地WS端口侦听中，" + "...");
+                Logger.debug(LocalWSDataReciever.TAG, "【IMCORE】本地WS端口侦听中，" + "...");
             }
 
             this.udpListeningImpl();
 
         } catch (var2) {
-            console.warn(LocalWSDataReciever.TAG, "【IMCORE】本地WSSocket监听开启时发生异常," + var2.getMessage(), var2);
+            Logger.warn(LocalWSDataReciever.TAG, "【IMCORE】本地WSSocket监听开启时发生异常," + var2.getMessage(), var2);
         }
 
     }
@@ -81,12 +82,12 @@ export class MessageHandler {
                 if (pFromServer.isQoS()) {
                     if (pFromServer.getType() == 50 && ProtocalFactory.parsePLoginInfoResponse(pFromServer.getDataContent()).getCode() != 0) {
                         if (ClientCoreSDK.DEBUG) {
-                            console.debug(LocalWSDataReciever.TAG, "【IMCORE】【BugFIX】这是服务端的登陆返回响应包，且服务端判定登陆失败(即code!=0)，本次无需发送ACK应答包！");
+                            Logger.debug(LocalWSDataReciever.TAG, "【IMCORE】【BugFIX】这是服务端的登陆返回响应包，且服务端判定登陆失败(即code!=0)，本次无需发送ACK应答包！");
                         }
                     } else {
                         if (QoS4ReciveDaemon.getInstance().hasRecieved(pFromServer.getFp())) {
                             if (ClientCoreSDK.DEBUG) {
-                                console.debug(LocalWSDataReciever.TAG, "【IMCORE】【QoS机制】" + pFromServer.getFp() + "已经存在于发送列表中，这是重复包，通知应用层收到该包罗！");
+                                Logger.debug(LocalWSDataReciever.TAG, "【IMCORE】【QoS机制】" + pFromServer.getFp() + "已经存在于发送列表中，这是重复包，通知应用层收到该包罗！");
                             }
 
                             QoS4ReciveDaemon.getInstance().addRecieved(pFromServer);
@@ -109,7 +110,7 @@ export class MessageHandler {
                     case 54:
                         let theFingerPrint: string = pFromServer.getDataContent();
                         if (ClientCoreSDK.DEBUG) {
-                            console.debug(LocalWSDataReciever.TAG, "【IMCORE】【QoS】收到" + pFromServer.getFrom() + "发过来的指纹为" + theFingerPrint + "的应答包.");
+                            Logger.debug(LocalWSDataReciever.TAG, "【IMCORE】【QoS】收到" + pFromServer.getFrom() + "发过来的指纹为" + theFingerPrint + "的应答包.");
                         }
 
                         if (ClientCoreSDK.getInstance().getMessageQoSEvent() != null) {
@@ -147,7 +148,7 @@ export class MessageHandler {
                         break;
                     case 51:
                         if (ClientCoreSDK.DEBUG) {
-                            console.debug(LocalWSDataReciever.TAG, "【IMCORE】收到服务端回过来的Keep Alive心跳响应包.");
+                            Logger.debug(LocalWSDataReciever.TAG, "【IMCORE】收到服务端回过来的Keep Alive心跳响应包.");
                         }
 
                         KeepAliveDaemon.getInstance().updateGetKeepAliveResponseFromServerTimstamp();
@@ -156,7 +157,7 @@ export class MessageHandler {
                         let errorRes = ProtocalFactory.parsePErrorResponse(pFromServer.getDataContent());
                         if (errorRes.getErrorCode() == 301) {
                             ClientCoreSDK.getInstance().setLoginHasInit(false);
-                            console.error(LocalWSDataReciever.TAG, "【IMCORE】收到服务端的“尚未登陆”的错误消息，心跳线程将停止，请应用层重新登陆.");
+                            Logger.error(LocalWSDataReciever.TAG, "【IMCORE】收到服务端的“尚未登陆”的错误消息，心跳线程将停止，请应用层重新登陆.");
                             KeepAliveDaemon.getInstance().stop();
                             AutoReLoginDaemon.getInstance().start(false);
                         }
@@ -166,10 +167,10 @@ export class MessageHandler {
                         }
                         break;
                     default:
-                        console.warn(LocalWSDataReciever.TAG, "【IMCORE】收到的服务端消息类型：" + pFromServer.getType() + "，但目前该类型客户端不支持解析和处理！");
+                        Logger.warn(LocalWSDataReciever.TAG, "【IMCORE】收到的服务端消息类型：" + pFromServer.getType() + "，但目前该类型客户端不支持解析和处理！");
                 }
             } catch (var5) {
-                console.warn(LocalWSDataReciever.TAG, "【IMCORE】处理消息的过程中发生了错误.", var5);
+                Logger.warn(LocalWSDataReciever.TAG, "【IMCORE】处理消息的过程中发生了错误.", var5);
             }
 
         }
@@ -179,11 +180,11 @@ export class MessageHandler {
         if (pFromServer.getFp() != null) {
             new SendCommonDataAsync(ProtocalFactory.createRecivedBack(pFromServer.getFrom(), pFromServer.getFp(), pFromServer.isBridge())).exceute(code => {
                 if (ClientCoreSDK.DEBUG) {
-                    console.debug(LocalWSDataReciever.TAG, "【IMCORE】【QoS】向" + pFromServer.getFrom() + "发送" + pFromServer.getFp() + "包的应答包成功,from=" + pFromServer.getTo() + "！");
+                    Logger.debug(LocalWSDataReciever.TAG, "【IMCORE】【QoS】向" + pFromServer.getFrom() + "发送" + pFromServer.getFp() + "包的应答包成功,from=" + pFromServer.getTo() + "！");
                 }
             })
         } else {
-            console.warn(LocalWSDataReciever.TAG, "【IMCORE】【QoS】收到" + pFromServer.getFrom() + "发过来需要QoS的包，但它的指纹码却为null！无法发应答包！");
+            Logger.warn(LocalWSDataReciever.TAG, "【IMCORE】【QoS】收到" + pFromServer.getFrom() + "发过来需要QoS的包，但它的指纹码却为null！无法发应答包！");
         }
 
     }

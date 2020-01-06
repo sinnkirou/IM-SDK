@@ -5,6 +5,7 @@ import WebsocketUtil from '../utils/WebsocketUtil';
 import LocalWSProvider from './LocalWSProvider';
 import LocalWSDataReciever from './LocalWSDataReciever';
 import QoS4SendDaemon from './QoS4SendDaemon';
+import Logger from '../utils/Logger';
 
 export default class LocalWSDataSender {
 	public static TAG: string = 'LocalWSDataSender';
@@ -84,14 +85,14 @@ export default class LocalWSDataSender {
 		if (!ClientCoreSDK.getInstance().isInitialed()) {
 			return 203;
 		} else if (!ClientCoreSDK.getInstance().isLocalDeviceNetworkOk()) {
-			console.error(LocalWSDataSender.TAG, '【IMCORE】本地网络不能工作，send数据没有继续!');
+			Logger.error(LocalWSDataSender.TAG, '【IMCORE】本地网络不能工作，send数据没有继续!');
 			return 204;
 		} else {
 			let ds: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
 			if (ds != null && ds.readyState === ds.OPEN) {
 				try {
 					if (LocalWSProvider.getInstance().getURL == null) {
-						console.warn(
+						Logger.warn(
 							LocalWSDataSender.TAG,
 							'【IMCORE】send数据没有继续，原因是ConfigEntity.server_ip==null!'
 						);
@@ -99,7 +100,7 @@ export default class LocalWSDataSender {
 					}
 
 				} catch (var5) {
-					console.warn(LocalWSDataSender.TAG, '【IMCORE】send时出错，原因是：' + var5.getMessage(), var5);
+					Logger.warn(LocalWSDataSender.TAG, '【IMCORE】send时出错，原因是：' + var5.getMessage(), var5);
 					return 202;
 				}
 			}
@@ -133,7 +134,7 @@ export class SendLoginDataAsync {
 		if (code == 0) {
 			LocalWSDataReciever.getInstance().startup();
 		} else {
-			console.debug(LocalWSDataSender.TAG, '【IMCORE】登陆数据发送失败, 错误码是：' + code + '！');
+			Logger.debug(LocalWSDataSender.TAG, '【IMCORE】登陆数据发送失败, 错误码是：' + code + '！');
 		}
 		if(callBack)
 			callBack(code);
@@ -157,7 +158,7 @@ export class SendCommonDataAsync {
 	constructor(p: Protocal) {
 		this.p = null;
 		if (p == null) {
-			console.warn(LocalWSDataSender.TAG, '【IMCORE】无效的参数p==null!');
+			Logger.warn(LocalWSDataSender.TAG, '【IMCORE】无效的参数p==null!');
 		} else {
 			this.p = p;
 		}
@@ -168,7 +169,7 @@ export class SendCommonDataAsync {
 			this.p != null ? await LocalWSDataSender.getInstance().sendCommonDataWithProtocal(this.p) : -1;
 
 		if (code !== 0) {
-			console.debug(LocalWSDataSender.TAG, '【IMCORE】通用数据发送失败, 错误码是：' + code + '！');
+			Logger.debug(LocalWSDataSender.TAG, '【IMCORE】通用数据发送失败, 错误码是：' + code + '！');
 		}
 		if(callBack)
 			callBack(code);
@@ -188,7 +189,7 @@ export class SendLogoutDataAsync {
 		let code: number = await LocalWSDataSender.getInstance().sendLogOut();
 
 		if (code !== 0) {
-			console.debug(LocalWSDataSender.TAG, '【IMCORE】登出数据发送失败, 错误码是：' + code + '！');
+			Logger.debug(LocalWSDataSender.TAG, '【IMCORE】登出数据发送失败, 错误码是：' + code + '！');
 		}
 		if(callBack)
 			callBack(code);

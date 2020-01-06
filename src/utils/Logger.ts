@@ -1,40 +1,44 @@
 import moment from 'moment';
 
-const log = (level: string, msg: string) => {
-  const formattedMsg = `[${level}] ${msg}`;
-  if (level === 'ERROR') {
-    console.error(formattedMsg);
-  } else {
-    console.debug(formattedMsg);
-  }
+const log = (tag: string = null, level: string, msg: string, others: any = '') => {
+	const formattedMsg = `[${level}][${tag || ''}] ${msg}`;
+	if (level === 'ERROR') {
+		console.error(formattedMsg, others);
+	} else if (level === 'WARN') {
+		console.warn(formattedMsg, others);
+	} else {
+		console.debug(formattedMsg, others);
+	}
 };
 
-const info = (message: string) => {
-  log('INFO', `[${moment().format('YYYY-MM-DD HH:mm:ss')}] => ${message}`);
+const info = (tag: string = null, message: string, others?: any) => {
+	log(tag, 'INFO', `[${moment().format('YYYY-MM-DD HH:mm:ss')}] => ${message}`, others);
 };
 
-const debug = (message: string) => {
-  log('DEBUG', `[${moment().format('YYYY-MM-DD HH:mm:ss')}] => ${message}`);
+const debug = (tag: string = null, message: string, others?: any) => {
+	log(tag, 'DEBUG', `[${moment().format('YYYY-MM-DD HH:mm:ss')}] => ${message}`, others);
 };
 
-const warn = (message: string) => {
-  log('WARN', `[${moment().format('YYYY-MM-DD HH:mm:ss')}] => ${message}`);
+const warn = (tag: string = null, message: string, others?: any) => {
+	log(tag, 'WARN', `[${moment().format('YYYY-MM-DD HH:mm:ss')}] => ${message}`, others);
 };
 
-const error = (message: string, err?: any) => {
-  if (err) {
-    log(
-      'ERROR',
-      `[${moment().format('YYYY-MM-DD HH:mm:ss')}] => ${message}:\n ${err.message}-${err.stack}`
-    );
-  } else {
-    log('ERROR', `[${moment().format('YYYY-MM-DD HH:mm:ss')}] => ${message}`);
-  }
+const error = (tag: string = null, message: string, err?: any, others?: any) => {
+	if (err) {
+		log(
+			tag,
+			'ERROR',
+			`[${moment().format('YYYY-MM-DD HH:mm:ss')}] => ${message}:\n ${err.message}-${err.stack}`,
+			others
+		);
+	} else {
+		log(tag, 'ERROR', `[${moment().format('YYYY-MM-DD HH:mm:ss')}] => ${message}`, others);
+	}
 };
 
 export default {
-  info,
-  debug,
-  warn,
-  error,
+	info,
+	debug,
+	warn,
+	error
 };

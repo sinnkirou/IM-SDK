@@ -1,4 +1,5 @@
 import ClientCoreSDK from './ClientCoreSDK';
+import Logger from '../utils/Logger';
 
 export default class LocalWSProvider {
     private static TAG:string = "LocalWSProvider";
@@ -31,7 +32,7 @@ export default class LocalWSProvider {
             this.localWebSocket = new WebSocket(this.wsUrl, this.wsProtocal);
             return this.localWebSocket;
         } catch (var2) {
-            console.warn(LocalWSProvider.TAG, "【IMCORE】localWebSocket创建时出错，原因是：" + var2.getMessage(), var2);
+            Logger.warn(LocalWSProvider.TAG, "【IMCORE】localWebSocket创建时出错，原因是：" + var2.getMessage(), var2);
             this.closeLocalWebSocket();
             return null;
         }
@@ -48,18 +49,18 @@ export default class LocalWSProvider {
     public closeLocalWebSocket(silent: boolean = true): void {
         try {
             if (ClientCoreSDK.DEBUG && !silent) {
-                console.debug(LocalWSProvider.TAG, "【IMCORE】正在closeLocalWebSocket()...");
+                Logger.debug(LocalWSProvider.TAG, "【IMCORE】正在closeLocalWebSocket()...");
             }
 
             if (this.localWebSocket != null) {
                 this.localWebSocket.close();
                 this.localWebSocket = null;
             } else if (!silent) {
-                console.debug(LocalWSProvider.TAG, "【IMCORE】Socket处于未初化状态（可能是您还未登陆），无需关闭。");
+                Logger.debug(LocalWSProvider.TAG, "【IMCORE】Socket处于未初化状态（可能是您还未登陆），无需关闭。");
             }
         } catch (var3) {
             if (!silent) {
-                console.warn(LocalWSProvider.TAG, "【IMCORE】lcloseLocalWebSocket时出错，原因是：" + var3.getMessage(), var3);
+                Logger.warn(LocalWSProvider.TAG, "【IMCORE】lcloseLocalWebSocket时出错，原因是：" + var3.getMessage(), var3);
             }
         }
 

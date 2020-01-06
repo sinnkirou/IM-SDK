@@ -1,5 +1,6 @@
 import IChatBaseEvent from './inteface/IChatBaseEvent';
 import {ChatBaseCB, } from './inteface/IEventCallBack';
+import Logger from '../utils/Logger';
 
 export default class ChatBaseEventImpl implements IChatBaseEvent {
 	private static TAG: string = "ChatBaseEventImpl";
@@ -16,13 +17,13 @@ export default class ChatBaseEventImpl implements IChatBaseEvent {
 
 	public onLoginMessage(dwErrorCode: number): void {
 		if (dwErrorCode == 0) {
-			console.debug(ChatBaseEventImpl.TAG, "【DEBUG_UI】IM服务器登录/重连成功！");
+			Logger.debug(ChatBaseEventImpl.TAG, "【DEBUG_UI】IM服务器登录/重连成功！");
 			if (this.onLoginOrReloginSuccessCB) {
 				this.onLoginOrReloginSuccessCB();
 			}
 		}
 		else {
-			console.error(ChatBaseEventImpl.TAG, "【DEBUG_UI】IM服务器登录/连接失败，错误代码：" + dwErrorCode);
+			Logger.error(ChatBaseEventImpl.TAG, "【DEBUG_UI】IM服务器登录/连接失败，错误代码：" + dwErrorCode);
 			if (this.onLoginOrReloginFailCB) {
 				this.onLoginOrReloginFailCB();
 			}
@@ -31,7 +32,7 @@ export default class ChatBaseEventImpl implements IChatBaseEvent {
 	}
 
 	public onLinkCloseMessage(dwErrorCode: number): void {
-		console.error(ChatBaseEventImpl.TAG, "【DEBUG_UI】与IM服务器的网络连接出错关闭了，error：" + dwErrorCode);
+		Logger.error(ChatBaseEventImpl.TAG, "【DEBUG_UI】与IM服务器的网络连接出错关闭了，error：" + dwErrorCode);
 		if (this.onLinkCloseMessageCB) {
 			this.onLinkCloseMessageCB();
 		}
