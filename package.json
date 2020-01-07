@@ -1,17 +1,17 @@
 {
-  "name": "shurui-im-sdk",
+  "name": "srt-im-sdk",
   "version": "0.0.1",
-  "description": "shurui im sdk",
+  "description": "im client sdk",
   "scripts": {
     "build": "set NODE_ENV=production && webpack --config ./config/webpack.config.prod.js",
     "pub": "npm run build && npm publish",
     "start": "webpack-dev-server --config ./config/webpack.config.dev.js"
   },
   "main": "dist/index.js",
+  "types": "dist/src/index.d.ts",
   "files": [
     "dist"
   ],
-  "types": "index.d.ts",
   "author": "",
   "license": "ISC",
   "dependencies": {

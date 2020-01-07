@@ -11,7 +11,7 @@ const Demo = () => {
 	const [error, setError] = useState(null);
 	const [lostMsgs, setLostMsgs] = useState(null);
 	const [msgBeReveived, setMsgBeReveived] = useState(null);
-	const manager = new Manager({
+	const options = {
 		wsUrl: 'ws://192.168.198.202:7901/ws',
 		chatBaseCB: {
 			onLoginOrReloginSuccessCB: () => {
@@ -32,7 +32,8 @@ const Demo = () => {
 			handleMessageLost,
 			messagesBeReceivedCB,
 		}
-	});
+	};
+	Manager.getInstance(options);
 
 	useEffect(() => componentWillUnmount, []);
 	const from = useRef(null);
@@ -41,7 +42,7 @@ const Demo = () => {
 
 	function componentWillUnmount() {
 		// 组件销毁时你要执行的代码
-		manager.release();
+		Manager.getInstance().release();
 		console.debug('组件销毁？');
 	}
 
@@ -85,7 +86,7 @@ const Demo = () => {
 					type="button"
 					value="发送"
 					onClick={() => {
-						manager.send(content.current.value, from.current.value, to.current.value, true, null, null, code => {
+						Manager.getInstance().send(content.current.value, from.current.value, to.current.value, true, null, null, code => {
 							if (code === 0) {
 								content.current.value = "";
 							} else {
@@ -100,8 +101,8 @@ const Demo = () => {
 					type="button"
 					value="登陆"
 					onClick={() => {
-						manager.login(from.current.value, 'token', null, code=>{
-							if(code !== 0){
+						Manager.getInstance().login(from.current.value, 'token', null, code => {
+							if (code !== 0) {
 								alert('登陆失败，请重试');
 							}
 						});
@@ -113,7 +114,8 @@ const Demo = () => {
 					type="button"
 					value="注销"
 					onClick={() => {
-						manager.logout();
+						Manager.getInstance().logout();
+						Manager.getInstance().resetInitFlag();
 						setStatus(null);
 					}}
 				/>

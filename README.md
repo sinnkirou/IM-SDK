@@ -1,1 +1,1 @@
-Shurui IM SDK
+(SRT) IM client SDK with websocket

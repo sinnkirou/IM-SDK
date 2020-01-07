@@ -29,14 +29,13 @@ export default class IMClientManager {
 	//
 	private messageQoSListener: MessageQoSEventImpl = null;
 
-	public static getInstance(options: WSOptions): IMClientManager {
-		if (IMClientManager.instance == null) {
-			const { wsUrl, } = options;
-			if (wsUrl) {
-				IMClientManager.instance = new IMClientManager(options)
-			} else {
+	public static getInstance(options?: WSOptions): IMClientManager {
+		if (IMClientManager.instance == null || !IMClientManager.instance.getInitFlag()) {
+			const { wsUrl, } = options || { wsUrl: '' };
+			if (!wsUrl) {
 				throw new Error("wsURL 参数不可为空");
 			}
+			IMClientManager.instance = new IMClientManager(options)
 		};
 		return IMClientManager.instance;
 	}
@@ -47,21 +46,7 @@ export default class IMClientManager {
 
 	public initMobileIMSDK(options: WSOptions): void {
 		if (!this.init) {
-			// 设置AppKey
-			// ConfigEntity.appKey = "5418023dfd98c579b6001741";
-
-			// 设置服务器ip和服务器端口
-			//			ConfigEntity.serverIP = "192.168.82.138";
-			//			ConfigEntity.serverIP = "rbcore.openmob.net";
-			//			ConfigEntity.serverWSPort = 7901;
-
-			// MobileIMSDK核心IM框架的敏感度模式设置
-			//			ConfigEntity.setSenseMode(SenseMode.MODE_10S);
-
-			// 开启/关闭DEBUG信息输出
-			//	    	ClientCoreSDK.DEBUG = false;
-
-			// 【特别注意】请确保首先进行核心库的初始化（这是不同于iOS和Java端的地方)
+			ClientCoreSDK.DEBUG = false;
 			const { wsUrl, wsProtocal, chatBaseCB, chatTransDataCB, messageQoSCB } = options;
 			ClientCoreSDK.getInstance().init(wsUrl, wsProtocal);
 
@@ -94,6 +79,10 @@ export default class IMClientManager {
 		this.init = false;
 	}
 
+	public getInitFlag(): boolean {
+		return this.init;
+	}
+
 	public getTransDataListener(): ChatTransDataEventImpl {
 		return this.transDataListener;
 	}
@@ -111,7 +100,7 @@ export default class IMClientManager {
 	public logout(callBack?: (code: number) => void): void {
 		new SendLogoutDataAsync().exceute(callBack);
 	}
-	public send(dataContent: string, from_user_id: string, to_user_id: string, Qos?: boolean, fingerPrint?: string, typeu: number = 0, callBack?: (code: number) => void): void {
+	public send(dataContent: string, from_user_id: string, to_user_id: string, Qos: boolean = true, fingerPrint?: string, typeu: number = 0, callBack?: (code: number) => void): void {
 		new SendCommonDataAsync(ProtocalFactory.createCommonData(dataContent, from_user_id, to_user_id, Qos, fingerPrint, typeu)).exceute(callBack);
 	}
 
