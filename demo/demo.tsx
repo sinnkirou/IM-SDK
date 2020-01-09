@@ -46,11 +46,11 @@ const Demo = () => {
 	}
 
 	function onTransBufferCB(params) {
-		const { fingerPrintOfProtocal, userid, dataContent, typeu, sendTs } = params;
+		const { fp, from, dataContent, typeu, sendTs } = params;
 		setMessage(
 			`${message || ''}
-			fp: ${fingerPrintOfProtocal}\n
-			userid: ${userid}\n
+			fp: ${fp}\n
+			userid: ${from}\n
 			dataContent: ${dataContent}\n
 			typeu: ${typeu}\n
 			sendTs: ${moment(sendTs)}\n
@@ -113,9 +113,7 @@ const Demo = () => {
 					type="button"
 					value="注销"
 					onClick={() => {
-						Manager.getInstance().logout(()=>{
-							Manager.getInstance().resetInitFlag();
-						});
+						Manager.getInstance().logout();
 						setStatus(null);
 					}}
 				/>
