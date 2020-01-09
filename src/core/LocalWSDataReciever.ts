@@ -101,7 +101,7 @@ export class MessageHandler {
                 switch (pFromServer.getType()) {
                     case 2:
                         if (ClientCoreSDK.getInstance().getChatTransDataEvent() != null) {
-                            ClientCoreSDK.getInstance().getChatTransDataEvent().onTransBuffer(pFromServer.getFp(), pFromServer.getFrom(), pFromServer.getDataContent(), pFromServer.getTypeu());
+                            ClientCoreSDK.getInstance().getChatTransDataEvent().onTransBuffer(pFromServer);
                         }
                         break;
                     case 4:

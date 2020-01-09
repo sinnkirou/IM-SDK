@@ -46,7 +46,7 @@ export default class IMClientManager {
 
 	public initMobileIMSDK(options: WSOptions): void {
 		if (!this.init) {
-			ClientCoreSDK.DEBUG = false;
+			ClientCoreSDK.DEBUG = true;
 			const { wsUrl, wsProtocal, chatBaseCB, chatTransDataCB, messageQoSCB } = options;
 			ClientCoreSDK.getInstance().init(wsUrl, wsProtocal);
 
@@ -93,8 +93,8 @@ export default class IMClientManager {
 		return this.messageQoSListener;
 	}
 
-	public login(logiUserId: string, loginToken: string, extra?: string, callBack?: (code: number) => void): void {
-		new SendLoginDataAsync(logiUserId, loginToken, extra).exceute(callBack)
+	public login(logiUserId: string, loginToken: string, app: string, extra?: string, callBack?: (code: number) => void): void {
+		new SendLoginDataAsync(logiUserId, loginToken, app, extra).exceute(callBack);
 	}
 
 	public logout(callBack?: (code: number) => void): void {

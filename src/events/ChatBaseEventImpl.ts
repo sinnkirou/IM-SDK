@@ -1,5 +1,5 @@
 import IChatBaseEvent from './inteface/IChatBaseEvent';
-import {ChatBaseCB, } from './inteface/IEventCallBack';
+import { ChatBaseCB, } from './inteface/IEventCallBack';
 import Logger from '../utils/Logger';
 
 export default class ChatBaseEventImpl implements IChatBaseEvent {
@@ -28,7 +28,6 @@ export default class ChatBaseEventImpl implements IChatBaseEvent {
 				this.onLoginOrReloginFailCB();
 			}
 		}
-
 	}
 
 	public onLinkCloseMessage(dwErrorCode: number): void {

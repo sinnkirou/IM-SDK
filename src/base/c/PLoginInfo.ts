@@ -1,14 +1,16 @@
 export default class PLoginInfo {
     private loginUserId: string;
     private loginToken: string;
+    private app: string;
     private extra: string;
 
-    constructor(loginUserId: string, loginToken: string, extra: string = null) {
+    constructor(loginUserId: string, loginToken: string, app: string, extra: string = null) {
         this.loginUserId = null;
         this.loginToken = null;
         this.extra = null;
         this.loginUserId = loginUserId;
         this.loginToken = loginToken;
+        this.app = app;
         this.extra = extra;
     }
 
@@ -34,5 +36,13 @@ export default class PLoginInfo {
 
     public setExtra(extra: string): void {
         this.extra = extra;
+    }
+
+    public getApp(): string {
+        return this.loginUserId;
+    }
+
+    public setApp(app: string): void {
+        this.app = app;
     }
 }

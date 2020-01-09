@@ -32,7 +32,7 @@ export default class AutoReLoginDaemon {
                 }
 
                 if (ClientCoreSDK.autoReLogin) {
-                    let code: number = LocalWSDataSender.getInstance().sendLogin(ClientCoreSDK.getInstance().getCurrentLoginUserId(), ClientCoreSDK.getInstance().getCurrentLoginToken(), ClientCoreSDK.getInstance().getCurrentLoginExtra());
+                    let code: number = LocalWSDataSender.getInstance().sendLogin(ClientCoreSDK.getInstance().getCurrentLoginUserId(), ClientCoreSDK.getInstance().getCurrentLoginToken(), ClientCoreSDK.getInstance().getApp(), ClientCoreSDK.getInstance().getCurrentLoginExtra());
                     if (code ===0){
                         LocalWSDataReciever.getInstance().startup();
                     }

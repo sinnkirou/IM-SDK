@@ -1,3 +1,5 @@
+import Protocal from '../../base/Protocal';
+
 export interface ChatBaseCB {
     onLoginOrReloginSuccessCB?: () => void,
     onLoginOrReloginFailCB?: () => void,
@@ -5,11 +7,11 @@ export interface ChatBaseCB {
 }
 
 export interface ChatTransDataCB {
-    onTransBufferCB?: (params: object) => void,
+    onTransBufferCB?: (params: Protocal) => void,
     onTransErrorCB?: (params: object) => void
 }
 
 export interface MessageQoSCB {
-    handleMessageLost?: (messages: Array<object>) => void,
+    handleMessageLost?: (messages: Array<Protocal>) => void,
     messagesBeReceivedCB?: (fingerPrint: string) => void
 }

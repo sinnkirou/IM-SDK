@@ -20,6 +20,7 @@ export default class ClientCoreSDK {
     private loginHasInit: boolean = false;
     private currentLoginUserId: string = null;
     private currentLoginToken: string = null;
+    private app: string = null;
     private currentLoginExtra: string = null;
     private chatBaseEvent: ChatBaseEvent = null;
     private chatTransDataEvent: ChatTransDataEvent = null;
@@ -100,6 +101,15 @@ export default class ClientCoreSDK {
 
     public setCurrentLoginToken(currentLoginToken: string): void {
         this.currentLoginToken = currentLoginToken;
+    }
+
+    public getApp(): string {
+        return this.app;
+    }
+
+    public setApp(app: string): string {
+        this.app = app;
+        return this.app;
     }
 
     public getCurrentLoginExtra(): string {

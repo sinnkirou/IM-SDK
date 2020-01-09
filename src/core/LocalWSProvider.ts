@@ -47,6 +47,12 @@ export default class LocalWSProvider {
         );
     }
 
+    public isLocalWebSocketOK(): boolean {
+        return this.localWebSocket != null && (
+            this.localWebSocket.readyState === this.localWebSocket.OPEN
+        );
+    }
+
     public getLocalWebSocket(): WebSocket {
         return this.isLocalWebSocketReady() ? this.localWebSocket : this.resetLocalWebSocket();
     }

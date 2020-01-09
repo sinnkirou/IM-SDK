@@ -1,6 +1,8 @@
+import Protocal from '../../base/Protocal';
+
 export default interface IChatTransDataEvent {
 
-    onTransBuffer(fingerPrintOfProtocal: string, userid: string, dataContent: string, typeu: number, callback?: (res: any) => void): void;
+    onTransBuffer(protocal: Protocal): void;
     
     onErrorResponse(errorCode: number, errorMsg: string, callback?: (res: any) => void): void;
 }

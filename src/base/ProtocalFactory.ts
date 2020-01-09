@@ -27,10 +27,10 @@ export default class ProtocalFactory {
         });
     }
 
-    public static createPLoginInfo(userId: string, token: string, extra: string): Protocal {
+    public static createPLoginInfo(userId: string, token: string, app: string, extra: string): Protocal {
         return new Protocal({
             type: ProtocalType.FROM_CLIENT_TYPE_OF_LOGIN,
-            dataContent: JSON.stringify(new PLoginInfo(userId, token, extra)),
+            dataContent: JSON.stringify(new PLoginInfo(userId, token, app, extra)),
             from: userId,
             to: "0"
         });

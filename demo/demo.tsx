@@ -33,7 +33,6 @@ const Demo = () => {
 			messagesBeReceivedCB,
 		}
 	};
-	Manager.getInstance(options);
 
 	useEffect(() => componentWillUnmount, []);
 	const from = useRef(null);
@@ -96,12 +95,12 @@ const Demo = () => {
 					}}
 				/>
 			</>}
-			{status === null && (
+			{(status === null || status === '登陆失败') && (
 				<input
 					type="button"
 					value="登陆"
 					onClick={() => {
-						Manager.getInstance().login(from.current.value, 'token', null, code => {
+						Manager.getInstance(options).login(from.current.value, 'token', 'test', null,  code => {
 							if (code !== 0) {
 								alert('登陆失败，请重试');
 							}
@@ -114,8 +113,9 @@ const Demo = () => {
 					type="button"
 					value="注销"
 					onClick={() => {
-						Manager.getInstance().logout();
-						Manager.getInstance().resetInitFlag();
+						Manager.getInstance().logout(()=>{
+							Manager.getInstance().resetInitFlag();
+						});
 						setStatus(null);
 					}}
 				/>

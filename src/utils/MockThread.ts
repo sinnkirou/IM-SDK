@@ -3,12 +3,15 @@ export default class MockThread {
     private doInBackground: any = null;
     private reRunProcess = null;
     private interval = null;
+    private trigger: boolean = true;
 
     constructor(doInBackground: any, millSeconds: number) {
         this.doInBackground = doInBackground;
         this.reRunProcess = () => {
             this.interval = setInterval(() => {
-                this.doInBackground();
+                if(this.trigger){
+                    this.doInBackground();
+                }
             }, millSeconds)
         }
     }
@@ -21,6 +24,7 @@ export default class MockThread {
     }
 
     public stop(): void {
+        this.trigger = false;
         clearInterval(this.interval);
     }
 }

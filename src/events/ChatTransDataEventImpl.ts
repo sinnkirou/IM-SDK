@@ -1,4 +1,5 @@
 import ErrorCode from '../base/ErrorCode';
+import Protocal from '../base/Protocal';
 import IChatTransDataEvent from './inteface/IChatTransDataEvent';
 import { ChatTransDataCB, } from './inteface/IEventCallBack';
 import Logger from '../utils/Logger';
@@ -14,10 +15,10 @@ export default class ChatTransDataEventImpl implements IChatTransDataEvent {
         this.onTransErrorCB = onTransErrorCB;
     }
 
-    public onTransBuffer(fingerPrintOfProtocal: string, userid: string, dataContent: string, typeu: number): void {
-        Logger.debug(ChatTransDataEventImpl.TAG, "【DEBUG_UI】[typeu=" + typeu + "]收到来自用户" + userid + "的消息:" + dataContent);
+    public onTransBuffer(p: Protocal): void {
+        Logger.debug(ChatTransDataEventImpl.TAG, "【DEBUG_UI】[typeu=" + p.getTypeu() + "]收到来自用户" + p.getFrom() + "的消息:" + p.getDataContent());
         if (this.onTransBufferCB) {
-            this.onTransBufferCB({ fingerPrintOfProtocal, userid, dataContent, typeu });
+            this.onTransBufferCB(p);
         }
     }
 
