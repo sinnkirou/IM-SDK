@@ -3,7 +3,7 @@ const merge = require('webpack-merge');
 const baseConfig = require('./webpack.base.js'); // 引用公共的配置
 
 const devConfig = {
-  entry: './demo/demo.tsx', // 入口文件
+  entry: './demo/index.js', // 入口文件
   mode: 'development', // 打包为开发模式
   output: {
     filename: 'demo.bundle.js', // 输出的文件名称
@@ -19,7 +19,7 @@ const devConfig = {
   module: {
     rules: [
       { // 编译less
-        test: /\.less$/,
+        test: /\.(le|c)ss$/,
         exclude: '/node_modules/',
         use: [{
           loader: 'style-loader'

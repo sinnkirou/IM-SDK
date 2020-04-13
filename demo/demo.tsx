@@ -5,7 +5,7 @@ import Manager from '../src/index';
 // import Manager from '../dist/index';
 import moment from 'moment';
 
-const Demo = () => {
+export const Demo = () => {
 	const [status, setStatus] = useState(null);
 	const [message, setMessage] = useState(null);
 	const [error, setError] = useState(null);
