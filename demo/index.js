@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './App.less';
-import 'react-chat-elements/dist/main.css';
-import App from './App';
+import demo from './demo';
 
 const render = Component => {
     ReactDOM.render(
@@ -11,4 +9,4 @@ const render = Component => {
     );
 };
 
-render(App);
+render(demo);

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ReactDom from 'react-dom';
 import styles from './index.less';
 import Manager from '../src/index';
 // import Manager from '../dist/index';
@@ -136,5 +135,3 @@ export const Demo = () => {
 		</div>
 	);
 };
-
-ReactDom.render(<Demo />, document.getElementById('root'));
