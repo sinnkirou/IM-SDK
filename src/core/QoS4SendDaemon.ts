@@ -44,7 +44,7 @@ export default class QoS4SendDaemon {
                     for (let key of this.sentMessages.keys()) {
                         let p: Protocal = this.sentMessages.get(key);
                         if (p != null && p.isQoS()) {
-                            if (p.getRetryCount() >= 2) {
+                            if (p.getRetryCount() >= QoS4SendDaemon.QOS_TRY_COUNT) {
                                 if (ClientCoreSDK.DEBUG) {
                                     Logger.debug(
                                         QoS4SendDaemon.TAG,
@@ -53,7 +53,7 @@ export default class QoS4SendDaemon {
                                         '的消息包重传次数已达' +
                                         p.getRetryCount() +
                                         '(最多' +
-                                        2 +
+                                        QoS4SendDaemon.QOS_TRY_COUNT +
                                         '次)上限，将判定为丢包！'
                                     );
                                 }
@@ -62,7 +62,7 @@ export default class QoS4SendDaemon {
                                 this.remove(p.getFp());
                             } else {
                                 let delta: number = new Date().getTime() - this.sendMessagesTimestamp.get(key);
-                                if (delta <= 3000) {
+                                if (delta <= QoS4SendDaemon.MESSAGES_JUST$NOW_TIME) {
                                     if (ClientCoreSDK.DEBUG) {
                                         Logger.warn(
                                             QoS4SendDaemon.TAG,
@@ -71,7 +71,7 @@ export default class QoS4SendDaemon {
                                             '的包距"刚刚"发出才' +
                                             delta +
                                             'ms(<=' +
-                                            3000 +
+                                            QoS4SendDaemon.MESSAGES_JUST$NOW_TIME +
                                             'ms将被认定是"刚刚"), 本次不需要重传哦.'
                                         );
                                     }
@@ -87,7 +87,7 @@ export default class QoS4SendDaemon {
                                                     '的消息包已成功进行重传，此次之后重传次数已达' +
                                                     p.getRetryCount() +
                                                     '(最多' +
-                                                    2 +
+                                                    QoS4SendDaemon.QOS_TRY_COUNT +
                                                     '次).'
                                                 );
                                             }
@@ -99,7 +99,7 @@ export default class QoS4SendDaemon {
                                                 '的消息包重传失败，它的重传次数之前已累计为' +
                                                 p.getRetryCount() +
                                                 '(最多' +
-                                                2 +
+                                                QoS4SendDaemon.QOS_TRY_COUNT +
                                                 '次).'
                                             );
                                         }

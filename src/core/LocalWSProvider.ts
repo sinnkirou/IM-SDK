@@ -47,7 +47,7 @@ export default class LocalWSProvider {
         );
     }
 
-    public isLocalWebSocketOK(): boolean {
+    public isLocalWebSocketOpen(): boolean {
         return this.localWebSocket != null && (
             this.localWebSocket.readyState === this.localWebSocket.OPEN
         );
@@ -67,7 +67,7 @@ export default class LocalWSProvider {
                 this.localWebSocket.close();
                 this.localWebSocket = null;
             } else if (!silent) {
-                Logger.debug(LocalWSProvider.TAG, "【IMCORE】Socket处于未初化状态（可能是您还未登陆），无需关闭。");
+                Logger.debug(LocalWSProvider.TAG, "【IMCORE】websocket处于未初化状态（可能是您还未登陆），无需关闭。");
             }
         } catch (var3) {
             if (!silent) {

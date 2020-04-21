@@ -48,7 +48,7 @@ export default class LocalWSDataReciever {
                 Logger.debug(LocalWSDataReciever.TAG, "【IMCORE】本地WS端口侦听中，" + "...");
             }
 
-            this.udpListeningImpl();
+            this.wsListeningImpl();
 
         } catch (var2) {
             Logger.warn(LocalWSDataReciever.TAG, "【IMCORE】本地WSSocket监听开启时发生异常," + var2.getMessage(), var2);
@@ -60,7 +60,7 @@ export default class LocalWSDataReciever {
         return this.init;
     }
 
-    private udpListeningImpl(): void {
+    private wsListeningImpl(): void {
         let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
         if (localWSSocket != null && localWSSocket.readyState === localWSSocket.OPEN) {
             localWSSocket.onmessage =  (event)=> {
@@ -98,6 +98,9 @@ export class MessageHandler {
                     }
                 }
 
+                if (ClientCoreSDK.DEBUG) {
+                    Logger.debug(LocalWSDataReciever.TAG, "【IMCORE】收到服务端返回响应包: ", pFromServer);
+                }
                 switch (pFromServer.getType()) {
                     case 2:
                         if (ClientCoreSDK.getInstance().getChatTransDataEvent() != null) {

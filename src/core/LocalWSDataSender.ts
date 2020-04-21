@@ -146,7 +146,7 @@ export class SendLoginDataAsync {
 				if (callBack)
 					callBack(code);
 				reRunProcess.stop();
-			} else if (LocalWSProvider.getInstance().isLocalWebSocketOK()) {
+			} else if (LocalWSProvider.getInstance().isLocalWebSocketOpen()) {
 				let code: number = await LocalWSDataSender.getInstance().sendLogin(
 					this.loginUserId,
 					this.loginToken,
