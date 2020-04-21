@@ -44,7 +44,7 @@ export default class IMClientManager {
 		this.initMobileIMSDK(options);
 	}
 
-	public initMobileIMSDK(options: WSOptions): void {
+	private initMobileIMSDK(options: WSOptions): void {
 		if (!this.init) {
 			ClientCoreSDK.DEBUG = true;
 			const { wsUrl, wsProtocal, chatBaseCB, chatTransDataCB, messageQoSCB } = options;

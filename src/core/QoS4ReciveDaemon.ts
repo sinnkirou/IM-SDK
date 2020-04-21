@@ -13,8 +13,8 @@ export default class QoS4ReciveDaemon {
     private init: boolean = false;
     private reRunProcess: MockThread = null;
 
-    public static getInstance(): QoS4ReciveDaemon {
-        if (QoS4ReciveDaemon.instance == null) {
+    public static getInstance(reset: boolean= false): QoS4ReciveDaemon {
+        if (QoS4ReciveDaemon.instance == null || reset) {
             QoS4ReciveDaemon.instance = new QoS4ReciveDaemon();
         }
 

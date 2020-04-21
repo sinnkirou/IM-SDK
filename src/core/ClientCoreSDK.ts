@@ -78,7 +78,15 @@ export default class ClientCoreSDK {
             })
         }
         if (!this.init && this.wsUrl) {
-            this.initialize(this.wsUrl, this.wsProtocal);
+            // this.initialize(this.wsUrl, this.wsProtocal);
+            LocalWSProvider.getInstance(this.wsUrl, this.wsProtocal);
+            this.registerReceiver(this.networkConnectionStatusBroadcastReceiver);
+            AutoReLoginDaemon.getInstance(true);
+            KeepAliveDaemon.getInstance(true);
+            LocalWSDataReciever.getInstance(true);
+            QoS4ReciveDaemon.getInstance(true);
+            QoS4SendDaemon.getInstance(true);
+            this.init = true;
         }
     }
 

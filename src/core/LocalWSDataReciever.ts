@@ -15,8 +15,8 @@ export default class LocalWSDataReciever {
     private messageHandler: MessageHandler = null;
     private init: boolean = false;
 
-    public static getInstance(): LocalWSDataReciever {
-        if (LocalWSDataReciever.instance == null) {
+    public static getInstance(reset: boolean= false): LocalWSDataReciever {
+        if (LocalWSDataReciever.instance == null || reset) {
             LocalWSDataReciever.instance = new LocalWSDataReciever();
         }
 

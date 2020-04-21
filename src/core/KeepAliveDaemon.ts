@@ -17,8 +17,8 @@ export default class KeepAliveDaemon {
     private init: boolean = false;
     private reRunProcess: MockThread = null;
 
-    public static getInstance(): KeepAliveDaemon {
-        if (KeepAliveDaemon.instance == null) {
+    public static getInstance(reset: boolean= false): KeepAliveDaemon {
+        if (KeepAliveDaemon.instance == null || reset) {
             KeepAliveDaemon.instance = new KeepAliveDaemon();
         }
 
@@ -99,6 +99,9 @@ export default class KeepAliveDaemon {
     public start(immediately: boolean): void {
         this.reRunProcess.start(immediately);
         this.keepAliveRunning = true;
+        if(ClientCoreSDK.DEBUG) {
+            Logger.debug(KeepAliveDaemon.TAG, '【IMCORE】心跳线程将启动...是否立即执行', immediately);
+        }
     }
 
     public isKeepAliveRunning(): boolean {

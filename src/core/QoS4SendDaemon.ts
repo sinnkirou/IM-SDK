@@ -16,8 +16,8 @@ export default class QoS4SendDaemon {
     private init: boolean = false;
     private reRunProcess: MockThread = null;
 
-    public static getInstance(): QoS4SendDaemon {
-        if (QoS4SendDaemon.instance == null) {
+    public static getInstance(reset: boolean= false): QoS4SendDaemon {
+        if (QoS4SendDaemon.instance == null || reset) {
             QoS4SendDaemon.instance = new QoS4SendDaemon();
         }
 

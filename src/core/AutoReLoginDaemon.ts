@@ -12,8 +12,8 @@ export default class AutoReLoginDaemon {
     private init: boolean = false;
     private reRunProcess: MockThread = null;
 
-    public static getInstance(): AutoReLoginDaemon {
-        if (AutoReLoginDaemon.instance == null) {
+    public static getInstance(reset: boolean= false): AutoReLoginDaemon {
+        if (AutoReLoginDaemon.instance == null || reset) {
             AutoReLoginDaemon.instance = new AutoReLoginDaemon();
         }
 
