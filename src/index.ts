@@ -48,7 +48,7 @@ export default class IMClientManager {
 		if (!this.init) {
 			ClientCoreSDK.DEBUG = true;
 			const { wsUrl, wsProtocal, chatBaseCB, chatTransDataCB, messageQoSCB } = options;
-			ClientCoreSDK.getInstance().init(wsUrl, wsProtocal);
+			ClientCoreSDK.getInstance().initialize(wsUrl, wsProtocal);
 
 			// 设置事件回调
 			this.baseEventListener = new ChatBaseEventImpl(chatBaseCB);

@@ -14,7 +14,7 @@ export default class ClientCoreSDK {
     public static DEBUG: boolean = true;
     public static autoReLogin: boolean = true;
     private static instance: ClientCoreSDK = null;
-    private _init: boolean = false;
+    private init: boolean = false;
     private localDeviceNetworkOk: boolean = true;
     private connectedToServer: boolean = true;
     private loginHasInit: boolean = false;
@@ -40,6 +40,8 @@ export default class ClientCoreSDK {
             LocalWSProvider.getInstance().closeLocalWebSocket();
         }
     };
+    private wsUrl: string = null;
+    private wsProtocal?: string = null;
 
     public static getInstance(): ClientCoreSDK {
         if (ClientCoreSDK.instance == null) {
@@ -49,8 +51,11 @@ export default class ClientCoreSDK {
         return ClientCoreSDK.instance;
     }
 
-    public init(wsUrl: string, wsProtocal?: string): void {
-        if (!this._init) {
+    public initialize(wsUrl: string, wsProtocal?: string): void {
+        if (!this.init) {
+            if(ClientCoreSDK.DEBUG) {
+                Logger.debug(ClientCoreSDK.TAG, '【IMCORE】IM Client初始化');
+            }
             LocalWSProvider.getInstance(wsUrl, wsProtocal);
             this.registerReceiver(this.networkConnectionStatusBroadcastReceiver);
             AutoReLoginDaemon.getInstance();
@@ -58,9 +63,23 @@ export default class ClientCoreSDK {
             LocalWSDataReciever.getInstance();
             QoS4ReciveDaemon.getInstance();
             QoS4SendDaemon.getInstance();
-            this._init = true;
+            this.init = true;
+            this.wsUrl = wsUrl;
+            this.wsProtocal = wsProtocal;
         }
+    }
 
+    public restart(): void {
+        if(ClientCoreSDK.DEBUG) {
+            Logger.debug(ClientCoreSDK.TAG, '【IMCORE】IM Client正在重启', {
+                init: this.init,
+                wsUrl: this.wsUrl,
+                wsProtocal: this.wsProtocal
+            })
+        }
+        if (!this.init && this.wsUrl) {
+            this.initialize(this.wsUrl, this.wsProtocal);
+        }
     }
 
     public release(): void {
@@ -78,10 +97,10 @@ export default class ClientCoreSDK {
         try {
             this.unregisterReceiver(this.networkConnectionStatusBroadcastReceiver);
         } catch {
-            Logger.info(ClientCoreSDK.TAG, "还未注册android网络事件广播的监听器，本次取消注册已被正常忽略哦.");
+            Logger.info(ClientCoreSDK.TAG, "还未注册网络事件广播的监听器，本次取消注册已被正常忽略哦.");
         }
 
-        this._init = false;
+        this.init = false;
         this.setLoginHasInit(false);
         this.setConnectedToServer(false);
     }
@@ -138,8 +157,8 @@ export default class ClientCoreSDK {
         this.connectedToServer = connectedToServer;
     }
 
-    public isInitialed(): boolean {
-        return this._init;
+    public isInitialized(): boolean {
+        return this.init;
     }
 
     public isLocalDeviceNetworkOk(): boolean {

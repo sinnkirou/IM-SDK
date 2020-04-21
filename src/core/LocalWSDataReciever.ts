@@ -36,8 +36,10 @@ export default class LocalWSDataReciever {
 
     public stop(): void {
         let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
-        if(localWSSocket)
+        if(localWSSocket) {
             localWSSocket.onerror = null;
+        }
+        this.init = false;
     }
 
     public startup(): void {
@@ -56,7 +58,7 @@ export default class LocalWSDataReciever {
 
     }
 
-    public isInit(): boolean {
+    public isInitialized(): boolean {
         return this.init;
     }
 

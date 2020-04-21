@@ -84,7 +84,7 @@ export default class LocalWSDataSender {
 	}
 
 	private send(data: string): number {
-		if (!ClientCoreSDK.getInstance().isInitialed()) {
+		if (!ClientCoreSDK.getInstance().isInitialized()) {
 			Logger.error(LocalWSDataSender.TAG, '【IMCORE】未初始化，send数据没有继续!');
 			return 203;
 		} else if (!ClientCoreSDK.getInstance().isLocalDeviceNetworkOk()) {
@@ -134,7 +134,7 @@ export class SendLoginDataAsync {
 			if(ClientCoreSDK.DEBUG){
 				Logger.debug(LocalWSDataSender.TAG, '检查ws初始化状态并尝试登陆');
 			}
-			if (!ClientCoreSDK.getInstance().isInitialed()) {
+			if (!ClientCoreSDK.getInstance().isInitialized()) {
 				let code: number = 203;
 				Logger.error(LocalWSDataSender.TAG, '【IMCORE】未初始化，send数据没有继续!');
 				if (callBack)

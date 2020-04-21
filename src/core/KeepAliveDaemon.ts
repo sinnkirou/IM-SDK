@@ -9,8 +9,9 @@ import Logger from '../utils/Logger';
 export default class KeepAliveDaemon {
     private static TAG: string = KeepAliveDaemon.name;
     private static instance: KeepAliveDaemon = null;
-    public static NETWORK_CONNECTION_TIME_OUT: number = 10000;
-    public static KEEP_ALIVE_INTERVAL: number = 20000;
+    private static NETWORK_CONNECTION_TIME_OUT: number = 10000;
+    private static KEEP_ALIVE_INTERVAL: number = 20000;
+    private static RESTART_DELAY_TIME_OUT: number = 1000;
     private keepAliveRunning: boolean = false;
     private lastGetKeepAliveResponseFromServerTimstamp: number = 0;
     private init: boolean = false;
@@ -47,21 +48,39 @@ export default class KeepAliveDaemon {
                     setTimeout(() => {
                         if (!isInitialedForKeepAlive) {
                             let now = new Date().getTime();
+                            const gap = now - this.lastGetKeepAliveResponseFromServerTimstamp;
+                            if(ClientCoreSDK.DEBUG) {
+                                Logger.debug(KeepAliveDaemon.TAG, '【IMCORE】心跳线程执行中...延迟为： ', gap)
+                            }
                             if (
-                                now - this.lastGetKeepAliveResponseFromServerTimstamp >=
+                                gap >=
                                 KeepAliveDaemon.NETWORK_CONNECTION_TIME_OUT
                             ) {
-                                this.stop();
-                                LocalWSProvider.getInstance().closeLocalWebSocket();
-                                QoS4ReciveDaemon.getInstance().stop();
-                                ClientCoreSDK.getInstance().setConnectedToServer(false);
-                                ClientCoreSDK.getInstance().getChatBaseEvent().onLinkCloseMessage(-1);
-                                AutoReLoginDaemon.getInstance().start(true);
-    
+                                // this.stop();
+                                // LocalWSProvider.getInstance().closeLocalWebSocket();
+                                // QoS4ReciveDaemon.getInstance().stop();
+                                // ClientCoreSDK.getInstance().setConnectedToServer(false);
+                                // ClientCoreSDK.getInstance().getChatBaseEvent().onLinkCloseMessage(-1);
+                                // AutoReLoginDaemon.getInstance().start(true);
+
+                                ClientCoreSDK.getInstance().release();
                                 willStop = true;
+
+                                setTimeout(()=>{
+                                    if(ClientCoreSDK.DEBUG) {
+                                        Logger.debug(KeepAliveDaemon.TAG, '【IMCORE】心跳线程判断超过限定延迟，正在重启',)
+                                    }
+                                    ClientCoreSDK.getInstance().restart();
+                                }, KeepAliveDaemon.RESTART_DELAY_TIME_OUT);
+                                setTimeout(()=>{
+                                    if(ClientCoreSDK.DEBUG) {
+                                        Logger.debug(KeepAliveDaemon.TAG, '【IMCORE】重启完成，正在重新登陆',)
+                                    }
+                                    AutoReLoginDaemon.getInstance().start(true);
+                                }, KeepAliveDaemon.RESTART_DELAY_TIME_OUT + 1000);
                             }
                         }
-                    }, KeepAliveDaemon.NETWORK_CONNECTION_TIME_OUT);
+                    }, 1000);
 
                 }
             }
@@ -74,6 +93,7 @@ export default class KeepAliveDaemon {
         this.reRunProcess.stop();
         this.keepAliveRunning = false;
         this.lastGetKeepAliveResponseFromServerTimstamp = 0;
+        this.init = false;
     }
 
     public start(immediately: boolean): void {
@@ -85,7 +105,7 @@ export default class KeepAliveDaemon {
         return this.keepAliveRunning;
     }
 
-    public isInit(): boolean {
+    public isInitialized(): boolean {
         return this.init;
     }
 

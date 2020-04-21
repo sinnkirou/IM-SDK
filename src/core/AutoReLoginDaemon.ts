@@ -7,7 +7,7 @@ import Logger from '../utils/Logger';
 export default class AutoReLoginDaemon {
     private static TAG: string = AutoReLoginDaemon.name;
     private static instance: AutoReLoginDaemon = null;
-    public static AUTO_RE$LOGIN_INTERVAL: number = 2000;
+    private static AUTO_RE$LOGIN_INTERVAL: number = 2000;
     private autoReLoginRunning: boolean = false;
     private init: boolean = false;
     private reRunProcess: MockThread = null;
@@ -45,6 +45,7 @@ export default class AutoReLoginDaemon {
     public stop(): void {
         this.reRunProcess.stop();
         this.autoReLoginRunning = false;
+        this.init = false;
     }
 
     public start(immediately: boolean): void {
@@ -56,7 +57,7 @@ export default class AutoReLoginDaemon {
         return this.autoReLoginRunning;
     }
 
-    public isInit(): boolean {
+    public isInitialized(): boolean {
         return this.init;
     }
 }

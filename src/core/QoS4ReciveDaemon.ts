@@ -6,8 +6,8 @@ import Logger from '../utils/Logger';
 export default class QoS4ReciveDaemon {
     private static TAG: string = QoS4ReciveDaemon.name;
     private static instance: QoS4ReciveDaemon = null;
-    public static CHECH_INTERVAL: number = 300000;
-    public static MESSAGES_VALID_TIME: number = 600000;
+    private static CHECH_INTERVAL: number = 300000;
+    private static MESSAGES_VALID_TIME: number = 600000;
     private recievedMessages: Map<string, number> = new Map();
     private running: boolean = false;
     private init: boolean = false;
@@ -76,13 +76,14 @@ export default class QoS4ReciveDaemon {
     public stop(): void {
         this.reRunProcess.stop();
         this.running = false;
+        this.init = false;
     }
 
     public isRunning(): boolean {
         return this.running;
     }
 
-    public isInit(): boolean {
+    public isInitialized(): boolean {
         return this.init;
     }
 

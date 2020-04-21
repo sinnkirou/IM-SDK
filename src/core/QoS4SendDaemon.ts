@@ -7,9 +7,9 @@ import Logger from '../utils/Logger';
 export default class QoS4SendDaemon {
     private static TAG: string = QoS4SendDaemon.name;
     private static instance: QoS4SendDaemon = null;
-    public static CHECH_INTERVAL: number = 5000;
-    public static MESSAGES_JUST$NOW_TIME: number = 3000;
-    public static QOS_TRY_COUNT: number = 2;
+    private static CHECH_INTERVAL: number = 5000;
+    private static MESSAGES_JUST$NOW_TIME: number = 3000;
+    private static QOS_TRY_COUNT: number = 2;
     private sentMessages: Map<string, Protocal> = new Map();
     private sendMessagesTimestamp: Map<string, number> = new Map();
     private running: boolean = false;
@@ -142,13 +142,14 @@ export default class QoS4SendDaemon {
     public stop(): void {
         this.reRunProcess.stop();
         this.running = false;
+        this.init = false;
     }
 
     public isRunning(): boolean {
         return this.running;
     }
 
-    public isInit(): boolean {
+    public isInitialized(): boolean {
         return this.init;
     }
 
