@@ -13,6 +13,8 @@ export default class WebsocketUtil {
                     skt.send(data);
                     return true;
                 }
+                Logger.error(WebsocketUtil.TAG, "【IMCORE】send方法中》》发送WS数据报文时出错了：readyState=" + skt.readyState + " 数据是", null, data);
+                return false;
             } catch (var4) {
                 Logger.error(WebsocketUtil.TAG, "【IMCORE】send方法中》》发送WS数据报文时出错了：readyState=" + skt.readyState + ", 原因是：" + var4.getMessage(), var4);
                 return false;

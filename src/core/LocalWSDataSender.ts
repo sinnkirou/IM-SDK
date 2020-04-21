@@ -42,7 +42,7 @@ export default class LocalWSDataSender {
 			code = this.send(p.toGsonString());
 		}
 
-		ClientCoreSDK.getInstance().release();
+		// ClientCoreSDK.getInstance().release();
 		return code;
 	}
 
