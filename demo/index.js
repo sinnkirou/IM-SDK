@@ -4,7 +4,7 @@ import demo from './demo';
 
 const render = Component => {
     ReactDOM.render(
-        <Component/>,
+        <Component />,
         document.getElementById('root'),
     );
 };

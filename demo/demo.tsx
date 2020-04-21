@@ -4,14 +4,14 @@ import Manager from '../src/index';
 // import Manager from '../dist/index';
 import moment from 'moment';
 
-export const Demo = () => {
+ const Demo = () => {
 	const [status, setStatus] = useState(null);
 	const [message, setMessage] = useState(null);
 	const [error, setError] = useState(null);
 	const [lostMsgs, setLostMsgs] = useState(null);
 	const [msgBeReveived, setMsgBeReveived] = useState(null);
 	const options = {
-		wsUrl: 'ws://192.168.198.202:7901/ws',
+		wsUrl: 'ws://192.168.198.212:7901/ws',
 		chatBaseCB: {
 			onLoginOrReloginSuccessCB: () => {
 				setStatus('登陆成功');
@@ -135,3 +135,5 @@ export const Demo = () => {
 		</div>
 	);
 };
+
+export default Demo;
