@@ -13,6 +13,7 @@ export default class ClientCoreSDK {
     private static TAG: string = ClientCoreSDK.name;
     public static DEBUG: boolean = true;
     public static autoReLogin: boolean = true;
+    private static RESTART_DELAY_TIME_OUT: number = 1000;
     private static instance: ClientCoreSDK = null;
     private init: boolean = false;
     private localDeviceNetworkOk: boolean = true;
@@ -30,14 +31,16 @@ export default class ClientCoreSDK {
         if (type === 'offline') {
             Logger.error(ClientCoreSDK.TAG, "【IMCORE】【本地网络通知】检测本地网络连接断开了!");
             this.localDeviceNetworkOk = false;
-            LocalWSProvider.getInstance().closeLocalWebSocket();
+            // this.release();
+            if (this.getChatBaseEvent() != null) {
+                this.getChatBaseEvent().onLinkCloseMessage(-9999);
+            }
         } else {
             if (ClientCoreSDK.DEBUG) {
                 Logger.error(ClientCoreSDK.TAG, "【IMCORE】【本地网络通知】检测本地网络已连接上了!");
             }
-
             this.localDeviceNetworkOk = true;
-            LocalWSProvider.getInstance().closeLocalWebSocket();
+            this.restart();
         }
     };
     private wsUrl: string = null;
@@ -70,24 +73,32 @@ export default class ClientCoreSDK {
     }
 
     public restart(): void {
-        if(ClientCoreSDK.DEBUG) {
-            Logger.debug(ClientCoreSDK.TAG, '【IMCORE】IM Client正在重启', {
-                init: this.init,
-                wsUrl: this.wsUrl,
-                wsProtocal: this.wsProtocal
-            })
-        }
-        if (!this.init && this.wsUrl) {
-            // this.initialize(this.wsUrl, this.wsProtocal);
-            LocalWSProvider.getInstance(this.wsUrl, this.wsProtocal);
-            this.registerReceiver(this.networkConnectionStatusBroadcastReceiver);
-            AutoReLoginDaemon.getInstance(true);
-            KeepAliveDaemon.getInstance(true);
-            LocalWSDataReciever.getInstance(true);
-            QoS4ReciveDaemon.getInstance(true);
-            QoS4SendDaemon.getInstance(true);
-            this.init = true;
-        }
+        this.release();
+        setTimeout(()=>{
+            if(ClientCoreSDK.DEBUG) {
+                Logger.debug(ClientCoreSDK.TAG, '【IMCORE】IM Client正在重启', {
+                    init: this.init,
+                    wsUrl: this.wsUrl,
+                    wsProtocal: this.wsProtocal
+                })
+            }
+            if (!this.init && this.wsUrl) {
+                LocalWSProvider.getInstance(this.wsUrl, this.wsProtocal);
+                this.registerReceiver(this.networkConnectionStatusBroadcastReceiver);
+                AutoReLoginDaemon.getInstance(true);
+                KeepAliveDaemon.getInstance(true);
+                LocalWSDataReciever.getInstance(true);
+                QoS4ReciveDaemon.getInstance(true);
+                QoS4SendDaemon.getInstance(true);
+                this.init = true;
+            }
+        }, ClientCoreSDK.RESTART_DELAY_TIME_OUT);
+        setTimeout(()=>{
+            if(ClientCoreSDK.DEBUG) {
+                Logger.debug(ClientCoreSDK.TAG, '【IMCORE】IM Client重启完成，正在重新登陆',)
+            }
+            AutoReLoginDaemon.getInstance().start(true);
+        }, ClientCoreSDK.RESTART_DELAY_TIME_OUT + 1000);
     }
 
     public release(): void {

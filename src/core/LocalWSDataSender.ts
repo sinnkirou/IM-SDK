@@ -132,7 +132,7 @@ export class SendLoginDataAsync {
 	public exceute(callBack?: (code: number) => void): void {
 		const reRunProcess = new MockThread(async () => {
 			if(ClientCoreSDK.DEBUG){
-				Logger.debug(LocalWSDataSender.TAG, '检查ws初始化状态并尝试登陆');
+				Logger.warn(LocalWSDataSender.TAG, '检查ws初始化状态并尝试登陆');
 			}
 			if (!ClientCoreSDK.getInstance().isInitialized()) {
 				let code: number = 203;
@@ -157,7 +157,7 @@ export class SendLoginDataAsync {
 				if (code == 0) {
 					LocalWSDataReciever.getInstance().startup();
 				} else {
-					Logger.debug(LocalWSDataSender.TAG, '【IMCORE】登陆数据发送失败, 错误码是：' + code + '！');
+					Logger.warn(LocalWSDataSender.TAG, '【IMCORE】登陆数据发送失败, 错误码是：' + code + '！');
 				}
 				if (callBack)
 					callBack(code);
@@ -196,7 +196,7 @@ export class SendCommonDataAsync {
 			this.p != null ? await LocalWSDataSender.getInstance().sendCommonDataWithProtocal(this.p) : -1;
 
 		if (code !== 0) {
-			Logger.debug(LocalWSDataSender.TAG, '【IMCORE】通用数据发送失败, 错误码是：' + code + '！');
+			Logger.warn(LocalWSDataSender.TAG, '【IMCORE】通用数据发送失败, 错误码是：' + code + '！');
 		}
 		if (callBack)
 			callBack(code);
@@ -216,7 +216,7 @@ export class SendLogoutDataAsync {
 		let code: number = await LocalWSDataSender.getInstance().sendLogOut();
 
 		if (code !== 0) {
-			Logger.debug(LocalWSDataSender.TAG, '【IMCORE】登出数据发送失败, 错误码是：' + code + '！');
+			Logger.warn(LocalWSDataSender.TAG, '【IMCORE】登出数据发送失败, 错误码是：' + code + '！');
 		}
 		if (callBack)
 			callBack(code);

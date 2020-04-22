@@ -28,7 +28,7 @@ export default class AutoReLoginDaemon {
         if (!this.init) {
             this.reRunProcess = new MockThread(() => {
                 if (ClientCoreSDK.DEBUG) {
-                    Logger.info(AutoReLoginDaemon.TAG, "【IMCORE】自动重新登陆线程执行中, autoReLogin?" + ClientCoreSDK.autoReLogin + "...");
+                    Logger.debug(AutoReLoginDaemon.TAG, "【IMCORE】自动重新登陆线程执行中, autoReLogin?" + ClientCoreSDK.autoReLogin + "...");
                 }
 
                 if (ClientCoreSDK.autoReLogin) {

@@ -6,7 +6,7 @@ import { SendCommonDataAsync, SendLoginDataAsync, SendLogoutDataAsync } from './
 import ProtocalFactory from './base/ProtocalFactory';
 import { ChatBaseCB, ChatTransDataCB, MessageQoSCB } from './events/inteface/IEventCallBack';
 
-interface WSOptions {
+export interface WSOptions {
 	wsUrl: string,
 	wsProtocal?: string,
 	chatBaseCB?: ChatBaseCB,
@@ -16,6 +16,8 @@ interface WSOptions {
 
 export default class IMClientManager {
 	private static TAG: string = IMClientManager.name;
+
+	private static DEBUG: boolean = false;
 
 	private static instance: IMClientManager = null;
 
@@ -46,7 +48,7 @@ export default class IMClientManager {
 
 	private initMobileIMSDK(options: WSOptions): void {
 		if (!this.init) {
-			ClientCoreSDK.DEBUG = true;
+			ClientCoreSDK.DEBUG = IMClientManager.DEBUG;
 			const { wsUrl, wsProtocal, chatBaseCB, chatTransDataCB, messageQoSCB } = options;
 			ClientCoreSDK.getInstance().initialize(wsUrl, wsProtocal);
 
@@ -99,7 +101,6 @@ export default class IMClientManager {
 
 	public logout(callBack?: (code: number) => void): void {
 		new SendLogoutDataAsync().exceute(callBack);
-		// this.resetInitFlag();
 	}
 	public send(dataContent: string, from_user_id: string, to_user_id: string, Qos: boolean = true, fingerPrint?: string, typeu: number = 0, callBack?: (code: number) => void): void {
 		new SendCommonDataAsync(ProtocalFactory.createCommonData(dataContent, from_user_id, to_user_id, Qos, fingerPrint, typeu)).exceute(callBack);
