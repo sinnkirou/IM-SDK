@@ -103,11 +103,13 @@
 
 
 
-主进程：
+6. 主进程：
 
 ClientCoreSDK
 
-其他主要进程：
+
+
+7. 其他主要进程：
 
 AutoReLoginDaemon 自动登录
 
@@ -117,7 +119,9 @@ QoS4ReciveDaemon Qos接收处理，消息接受质量保证线程
 
 QoS4SendDaemon Qos发送处理，消息发送质量保证线程
 
-其他封装：
+
+
+8. 其他封装：
 
 LocalWSDataReciever 消息接收处理，包括通用数据包、心跳包、登陆注销包等，
 
@@ -127,9 +131,7 @@ LocalWSProvider websocket初始化，封装等
 
 
 
-
-
-错误code
+9. code类型
 
 ​    COMMON_CODE_OK = 0,
 
@@ -159,7 +161,7 @@ LocalWSProvider websocket初始化，封装等
 
 
 
-消息类型
+10. 消息类型
 
 ​    FROM_CLIENT_TYPE_OF_LOGIN = 0,
 
@@ -184,5 +186,4 @@ LocalWSProvider websocket初始化，封装等
 ​    FROM_SERVER_TYPE_OF_RESPONSE$ECHO = 53,
 
 ​    FROM_SERVER_TYPE_OF_RESPONSE$RECIVED = 54
-
 
