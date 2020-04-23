@@ -85,17 +85,19 @@ export class MessageHandler {
                             Logger.debug(LocalWSDataReciever.TAG, "【IMCORE】【BugFIX】这是服务端的登陆返回响应包，且服务端判定登陆失败(即code!=0)，本次无需发送ACK应答包！");
                         }
                     } else {
-                        if (QoS4ReciveDaemon.getInstance().hasRecieved(pFromServer.getFp())) {
-                            if (ClientCoreSDK.DEBUG) {
-                                Logger.debug(LocalWSDataReciever.TAG, "【IMCORE】【QoS机制】" + pFromServer.getFp() + "已经存在于发送列表中，这是重复包，通知应用层收到该包罗！");
-                            }
+                        // if (QoS4ReciveDaemon.getInstance().hasRecieved(pFromServer.getFp())) {
+                        //     if (ClientCoreSDK.DEBUG) {
+                        //         Logger.debug(LocalWSDataReciever.TAG, "【IMCORE】【QoS机制】" + pFromServer.getFp() + "已经存在于发送列表中，这是重复包，通知应用层收到该包罗！");
+                        //     }
 
+                        //     QoS4ReciveDaemon.getInstance().addRecieved(pFromServer);
+                        //     this.sendRecievedBack(pFromServer);
+                        //     return;
+                        // }
+
+                        if( pFromServer.getType() !== 2) {
                             QoS4ReciveDaemon.getInstance().addRecieved(pFromServer);
-                            this.sendRecievedBack(pFromServer);
-                            return;
                         }
-
-                        QoS4ReciveDaemon.getInstance().addRecieved(pFromServer);
                         this.sendRecievedBack(pFromServer);
                     }
                 }
@@ -105,9 +107,10 @@ export class MessageHandler {
                 }
                 switch (pFromServer.getType()) {
                     case 2:
-                        if (ClientCoreSDK.getInstance().getChatTransDataEvent() != null) {
+                        if (ClientCoreSDK.getInstance().getChatTransDataEvent() != null && !QoS4ReciveDaemon.getInstance().hasRecieved(pFromServer.getFp())) {
                             ClientCoreSDK.getInstance().getChatTransDataEvent().onTransBuffer(pFromServer);
                         }
+                        QoS4ReciveDaemon.getInstance().addRecieved(pFromServer);
                         break;
                     case 4:
                     case 54:

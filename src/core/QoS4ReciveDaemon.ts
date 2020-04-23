@@ -97,7 +97,7 @@ export default class QoS4ReciveDaemon {
         if (fingerPrintOfProtocal == null) {
             Logger.warn(QoS4ReciveDaemon.TAG, '【IMCORE】无效的 fingerPrintOfProtocal==null!');
         } else {
-            if (this.recievedMessages.get(fingerPrintOfProtocal)) {
+            if (this.hasRecieved(fingerPrintOfProtocal)) {
                 Logger.warn(
                     QoS4ReciveDaemon.TAG,
                     '【IMCORE】【QoS接收方】指纹为' +
