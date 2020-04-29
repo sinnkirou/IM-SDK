@@ -48,14 +48,24 @@
 
    ```tsx
    //code === 0 表示成功
-   public login(logiUserId: string, loginToken: string, app: string, extra?: string, callBack?: (code: number) => void): void 
+   public login({
+      logiUserId: string,
+      loginToken: string,
+      app: string,
+      extra?: string,
+      callBack?: (code: number) => void }): void
    ```
 
    e.g.: 
 
    ```tsx
-   Manager.getInstance().login(id, token, 'test', null, (code) => {
+   Manager.getInstance().login({
+      logiUserId: id,
+      loginToken: token,
+      app: 'test',
+      callBack: (code) => {
    			if (callBack) { callBack(code); }
+      }
    });
    ```
 
@@ -79,17 +89,30 @@
 
    ```tsx
    //code === 0 表示成功
-   public send(dataContent: string, from_user_id: string, to_user_id: string, Qos: boolean = true, fingerPrint?: string, typeu: number = 0, callBack?: (code: number) => void): void
+   public send({
+      dataContent: string,
+      toId: string,
+      Qos: boolean = true,
+      fingerPrint?: string,
+      typeu: number = 0,
+      callBack?: (code: number) => void
+   }): void
    ```
 
    e.g.
 
    ```tsx
    const msg: IMessage = payload.message;
-   Manager.getInstance().send(msg.dataContent, String(msg.from), String(msg.to), true, msg.fp, null, (code) => {
-   	if (payload.handleSendResult) {
-   	  payload.handleSendResult(code);
-   	}
+   Manager.getInstance().send({
+      dataContent: msg.dataContent,
+      toId: String(msg.to),
+      fingerPrint: msg.fp,
+      callBack: (code, msg) => {
+         if (payload.handleSendResult) {
+            payload.handleSendResult(code);
+            console.debug(msg);
+         }
+      }
    });
    ```
 

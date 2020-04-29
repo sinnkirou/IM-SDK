@@ -1,10 +1,12 @@
 {
   "name": "srt-im-sdk",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "im client sdk",
   "scripts": {
     "build": "set NODE_ENV=production && webpack --config ./config/webpack.config.prod.js",
     "pub": "npm run build && npm publish",
+    "unpub": "npm unpublish srt-im-sdk@0.0.4",
+    "dep": "npm deprecate srt-im-sdk@'0.0.4' 'update README'",
     "start": "webpack-dev-server --config ./config/webpack.config.dev.js",
     "test": "jest"
   },

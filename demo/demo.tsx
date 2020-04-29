@@ -86,7 +86,7 @@ import moment from 'moment';
 					onClick={() => {
 						Manager.getInstance().send({
 							dataContent: content.current.value, 
-							to_user_id: to.current.value, 
+							toId: to.current.value, 
 							callBack: (code, msg) => {
 								if (code === 0) {
 									console.debug(msg);

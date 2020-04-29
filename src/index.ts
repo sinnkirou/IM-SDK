@@ -103,8 +103,8 @@ export default class IMClientManager {
 	public logout(callBack?: (code: number) => void): void {
 		new SendLogoutDataAsync().exceute(callBack);
 	}
-	public send({ dataContent, to_user_id, Qos = true, fingerPrint, typeu = 0, callBack }: { dataContent: string, to_user_id: string, Qos?: boolean, fingerPrint?: string, typeu?: number, callBack?: (code: number, msg: Protocal) => void }): void {
-		new SendCommonDataAsync(ProtocalFactory.createCommonData(dataContent, ClientCoreSDK.getInstance().getCurrentLoginUserId(), to_user_id, Qos, fingerPrint, typeu)).exceute(callBack);
+	public send({ dataContent, toId, Qos = true, fingerPrint, typeu = 0, callBack }: { dataContent: string, toId: string, Qos?: boolean, fingerPrint?: string, typeu?: number, callBack?: (code: number, msg: Protocal) => void }): void {
+		new SendCommonDataAsync(ProtocalFactory.createCommonData(dataContent, ClientCoreSDK.getInstance().getCurrentLoginUserId(), toId, Qos, fingerPrint, typeu)).exceute(callBack);
 	}
 
 }

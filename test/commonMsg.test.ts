@@ -40,7 +40,7 @@ describe('Common messages', ()=> {
         });
         await expect(server).toReceiveMessage("{\"bridge\":false,\"type\":0,\"dataContent\":\"{\\\"loginUserId\\\":\\\"1\\\",\\\"loginToken\\\":\\\"token\\\",\\\"extra\\\":null,\\\"app\\\":\\\"appName\\\"}\",\"from\":\"1\",\"to\":\"0\",\"fp\":null,\"Qos\":false,\"typeu\":-1,\"retryCount\":0}");
         IMClientManager.getInstance().send({
-            to_user_id: '2',
+            toId: '2',
             fingerPrint: fp,
             dataContent: 'test',
             callBack: (code)=> {
@@ -80,7 +80,7 @@ describe('Common messages', ()=> {
         });
         await expect(server).toReceiveMessage("{\"bridge\":false,\"type\":0,\"dataContent\":\"{\\\"loginUserId\\\":\\\"1\\\",\\\"loginToken\\\":\\\"token\\\",\\\"extra\\\":null,\\\"app\\\":\\\"appName\\\"}\",\"from\":\"1\",\"to\":\"0\",\"fp\":null,\"Qos\":false,\"typeu\":-1,\"retryCount\":0}");
         IMClientManager.getInstance().send({
-            to_user_id: '2',
+            toId: '2',
             dataContent: 'test',
             fingerPrint: fp,
             callBack: (code)=> {
