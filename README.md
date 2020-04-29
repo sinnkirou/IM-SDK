@@ -60,7 +60,7 @@
 
    ```tsx
    Manager.getInstance().login({
-      logiUserId: id,
+      loginUserId: id,
       loginToken: token,
       app: 'test',
       callBack: (code) => {
@@ -95,7 +95,7 @@
       Qos: boolean = true,
       fingerPrint?: string,
       typeu: number = 0,
-      callBack?: (code: number) => void
+      callBack?: (code: number, msg: Protocal) => void
    }): void
    ```
 

@@ -1,6 +1,6 @@
 {
   "name": "srt-im-sdk",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "im client sdk",
   "scripts": {
     "build": "set NODE_ENV=production && webpack --config ./config/webpack.config.prod.js",

@@ -96,8 +96,8 @@ export default class IMClientManager {
 		return this.messageQoSListener;
 	}
 
-	public login({ logiUserId, loginToken, app, extra, callBack }: { logiUserId: string, loginToken: string, app: string, extra?: string, callBack?: (code: number) => void }): void {
-		new SendLoginDataAsync(logiUserId, loginToken, app, extra).exceute(callBack);
+	public login({ loginUserId, loginToken, app, extra, callBack }: { loginUserId: string, loginToken: string, app: string, extra?: string, callBack?: (code: number) => void }): void {
+		new SendLoginDataAsync(loginUserId, loginToken, app, extra).exceute(callBack);
 	}
 
 	public logout(callBack?: (code: number) => void): void {

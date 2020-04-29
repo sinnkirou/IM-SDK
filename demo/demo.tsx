@@ -104,7 +104,7 @@ import moment from 'moment';
 					value="登陆"
 					onClick={() => {
 						Manager.getInstance(options).login({
-							logiUserId: from.current.value, 
+							loginUserId: from.current.value, 
 							loginToken: 'token', 
 							app: 'test',
 							callBack: code => {

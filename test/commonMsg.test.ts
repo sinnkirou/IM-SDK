@@ -31,7 +31,7 @@ describe('Common messages', ()=> {
         await server.connected;
 
         IMClientManager.getInstance().login({
-            logiUserId: '1',
+            loginUserId: '1',
             loginToken: 'token',
             app: 'appName',
             callBack: (code)=> {
@@ -71,7 +71,7 @@ describe('Common messages', ()=> {
         await server.connected;
 
         IMClientManager.getInstance().login({
-            logiUserId: '1',
+            loginUserId: '1',
             loginToken: 'token',
             app: 'appName',
             callBack: (code)=> {
