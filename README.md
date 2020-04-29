@@ -1,32 +1,62 @@
 (SRT) IM client SDK with websocket
 
+
 1. 初始化
 
    ```tsx
-   public static getInstance(options?: WSOptions): IMClientManager
+    public static getInstance(options?: WSOptions): IMClientManager
    ```
 
    e.g.
 
    ```tsx
-   const options: WSOptions = {
-     wsUrl: WS_URL,
-     chatBaseCB: {
-         onLoginOrReloginSuccessCB,
-         onLoginOrReloginFailCB,
-         onLinkCloseMessageCB
-     },
-     chatTransDataCB: {
-           onTransBufferCB,
-           onTransErrorCB
-     },
-     messageQoSCB: {
-       handleMessageLost,
-       messagesBeReceivedCB
-     }
-   };
+    //收到其他客户端消息
+    function onTransBufferCB(msg) {
+		const { fp, from, dataContent, typeu, sendTs } = msg;
+		//fp 消息报指纹，唯一id
+		//from 消息发送方id
+		//dataContent消息内容，内容为文本时为本身，为文件时由应用层定义规则并解析，比如定义为`${fp}|${fileName}|${fileType}|${fileKey}`
+		//typeu 单聊0群聊1
+		//sendTs 发送到服务器的时间
+	}
+    //收到服务端错误消息
+    function onTransErrorCB(params) {
+		const { errorCode, errorMsg } = params;
+		setError(`errorCode: ${errorCode}\n errorMsg:${errorMsg}`);
+	}
+    //发送过程中丢包
+	function handleMessageLost(lostMsgs: Array<object>) {
+		setLostMsgs(lostMsgs.map((msg) => JSON.stringify(msg)).join(','));
+	}
+    //服务端ack包（当发送包Qos=true时）
+    function messagesBeReceivedCB(fp: string) {
+		setMsgBeReveived(fp);
+	}
+	
+	const options: WSOptions = {
+         wsUrl: WS_URL,
+         chatBaseCB: {
+            onLoginOrReloginSuccessCB: () => {
+    			alert('登陆成功');
+    		},
+    		onLoginOrReloginFailCB: () => {
+    			alert('登陆失败');
+    		},
+    		onLinkCloseMessageCB: () => {
+    			alert('网络连接失败');
+    		}
+         },
+         chatTransDataCB: {
+            onTransBufferCB,
+            onTransErrorCB
+         },
+         messageQoSCB: {
+           handleMessageLost,
+           messagesBeReceivedCB
+         }
+    };
    
-   Manager.getInstance(options);
+    Manager.getInstance(options);
    ```
 
    
@@ -34,27 +64,28 @@
 2. 登陆
 
    ```tsx
-   //code === 0 表示成功
-   public login({
-      loginUserId: string,
-      loginToken: string,
-      app: string,
-      extra?: string,
-      callBack?: (code: number) => void
-   }): void
+    public login({
+      loginUserId: string, //登陆方id
+      loginToken: string, //登陆方token
+      app: string, //应用层项目名
+      extra?: string, //其他参数
+      callBack?: (code: number) => void //code === 0 表示登陆成功
+    }): void
    ```
 
    e.g.: 
 
    ```tsx
-   Manager.getInstance().login({
-      loginUserId: id,
-      loginToken: token,
+    Manager.getInstance().login({
+      loginUserId: '1',
+      loginToken: 'token',
       app: 'test',
       callBack: (code) => {
-   		  if (callBack) { callBack(code); }
+   		if (code !== 0) {
+		    alert('登陆失败，请重试');
+		}
       }
-   });
+    });
    ```
 
    
@@ -62,13 +93,14 @@
 3. 注销
 
    ```tsx
-   public logout(callBack?: (code: number) => void): void 
+   //code === 0 表示成功
+     public logout(callBack?: (code: number) => void): void 
    ```
 
    e.g.
 
    ```tsx
-   Manager.getInstance().logout();
+     Manager.getInstance().logout();
    ```
 
    
@@ -76,30 +108,27 @@
 4. 发送数据
 
    ```tsx
-   //code === 0 表示成功
    public send({
-      dataContent: string,
-      toId: string,
-      Qos: boolean = true,
-      fingerPrint?: string,
-      typeu: number = 0,
-      callBack?: (code: number, msg: Protocal) => void
+      dataContent: string, //发送内容，内容为文本时为本身，为文件时由应用层定义规则并解析，比如定义为`${fp}|${fileName}|${fileType}|${fileKey}`
+      toId: string, // 发送对象id
+      Qos: boolean = true, //是否需要服务端ack
+      fingerPrint?: string, //消息报指纹，唯一id
+      typeu: number = 0, // 单聊0，群聊1
+      callBack?: (code: number, msg: Protocal) => void //code === 0 表示发送成功，msg为发送包
    }): void
    ```
 
    e.g.
 
    ```tsx
-   const msg: IMessage = payload.message;
    Manager.getInstance().send({
-      dataContent: msg.dataContent,
-      toId: String(msg.to),
-      fingerPrint: msg.fp,
+      dataContent: 'test message',
+      toId: '2',
       callBack: (code, msg) => {
-         if (payload.handleSendResult) {
-            payload.handleSendResult(code);
-            console.debug(msg);
-         }
+        console.debug(msg);
+        if(code !== 0){
+            alert('发送失败')
+        }
       }
    });
    ```
