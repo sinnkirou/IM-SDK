@@ -102,9 +102,9 @@ export default class ClientCoreSDK {
     }
 
     public release(): void {
-        setTimeout(() => {
-            LocalWSProvider.getInstance().closeLocalWebSocket();
-        }, 500);
+        // setTimeout(() => {
+        //     LocalWSProvider.getInstance().closeLocalWebSocket();
+        // }, 500);
         AutoReLoginDaemon.getInstance().stop();
         QoS4SendDaemon.getInstance().stop();
         KeepAliveDaemon.getInstance().stop();
@@ -112,6 +112,7 @@ export default class ClientCoreSDK {
         QoS4ReciveDaemon.getInstance().stop();
         QoS4SendDaemon.getInstance().clear();
         QoS4ReciveDaemon.getInstance().clear();
+        LocalWSProvider.getInstance().closeLocalWebSocket();
 
         try {
             this.unregisterReceiver(this.networkConnectionStatusBroadcastReceiver);

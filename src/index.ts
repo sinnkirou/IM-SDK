@@ -5,6 +5,7 @@ import MessageQoSEventImpl from './events/MessageQoSEventImpl';
 import { SendCommonDataAsync, SendLoginDataAsync, SendLogoutDataAsync } from './core/LocalWSDataSender';
 import ProtocalFactory from './base/ProtocalFactory';
 import { ChatBaseCB, ChatTransDataCB, MessageQoSCB } from './events/inteface/IEventCallBack';
+import Protocal from './base/Protocal';
 
 export interface WSOptions {
 	wsUrl: string,
@@ -22,7 +23,7 @@ export default class IMClientManager {
 	private static instance: IMClientManager = null;
 
 	/** MobileIMSDK是否已被初始化. true表示已初化完成，否则未初始化. */
-	private init: boolean = false;
+	private static init: boolean = false;
 
 	//
 	private baseEventListener: ChatBaseEventImpl = null;
@@ -32,7 +33,7 @@ export default class IMClientManager {
 	private messageQoSListener: MessageQoSEventImpl = null;
 
 	public static getInstance(options?: WSOptions): IMClientManager {
-		if (IMClientManager.instance == null || !IMClientManager.instance.getInitFlag()) {
+		if (IMClientManager.instance == null || !IMClientManager.getInitFlag()) {
 			const { wsUrl, } = options || { wsUrl: '' };
 			if (!wsUrl) {
 				throw new Error("wsURL 参数不可为空");
@@ -47,7 +48,7 @@ export default class IMClientManager {
 	}
 
 	private initMobileIMSDK(options: WSOptions): void {
-		if (!this.init) {
+		if (!IMClientManager.init) {
 			ClientCoreSDK.DEBUG = IMClientManager.DEBUG;
 			const { wsUrl, wsProtocal, chatBaseCB, chatTransDataCB, messageQoSCB } = options;
 			ClientCoreSDK.getInstance().initialize(wsUrl, wsProtocal);
@@ -60,7 +61,7 @@ export default class IMClientManager {
 			ClientCoreSDK.getInstance().setChatTransDataEvent(this.transDataListener);
 			ClientCoreSDK.getInstance().setMessageQoSEvent(this.messageQoSListener);
 
-			this.init = true;
+			IMClientManager.init = true;
 		}
 	}
 
@@ -78,11 +79,11 @@ export default class IMClientManager {
 	 * 
 	 */
 	public resetInitFlag(): void {
-		this.init = false;
+		IMClientManager.init = false;
 	}
 
-	public getInitFlag(): boolean {
-		return this.init;
+	public static getInitFlag(): boolean {
+		return IMClientManager.init;
 	}
 
 	public getTransDataListener(): ChatTransDataEventImpl {
@@ -95,15 +96,15 @@ export default class IMClientManager {
 		return this.messageQoSListener;
 	}
 
-	public login(logiUserId: string, loginToken: string, app: string, extra?: string, callBack?: (code: number) => void): void {
+	public login({ logiUserId, loginToken, app, extra, callBack }: { logiUserId: string, loginToken: string, app: string, extra?: string, callBack?: (code: number) => void }): void {
 		new SendLoginDataAsync(logiUserId, loginToken, app, extra).exceute(callBack);
 	}
 
 	public logout(callBack?: (code: number) => void): void {
 		new SendLogoutDataAsync().exceute(callBack);
 	}
-	public send(dataContent: string, from_user_id: string, to_user_id: string, Qos: boolean = true, fingerPrint?: string, typeu: number = 0, callBack?: (code: number) => void): void {
-		new SendCommonDataAsync(ProtocalFactory.createCommonData(dataContent, from_user_id, to_user_id, Qos, fingerPrint, typeu)).exceute(callBack);
+	public send({ dataContent, to_user_id, Qos = true, fingerPrint, typeu = 0, callBack }: { dataContent: string, to_user_id: string, Qos?: boolean, fingerPrint?: string, typeu?: number, callBack?: (code: number, msg: Protocal) => void }): void {
+		new SendCommonDataAsync(ProtocalFactory.createCommonData(dataContent, ClientCoreSDK.getInstance().getCurrentLoginUserId(), to_user_id, Qos, fingerPrint, typeu)).exceute(callBack);
 	}
 
 }

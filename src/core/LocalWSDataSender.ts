@@ -191,7 +191,7 @@ export class SendCommonDataAsync {
 		}
 	}
 
-	public async exceute(callBack?: (code: number) => void): Promise<void> {
+	public async exceute(callBack?: (code: number, msg: Protocal) => void): Promise<void> {
 		let code: number =
 			this.p != null ? await LocalWSDataSender.getInstance().sendCommonDataWithProtocal(this.p) : -1;
 
@@ -199,7 +199,7 @@ export class SendCommonDataAsync {
 			Logger.warn(LocalWSDataSender.TAG, '【IMCORE】通用数据发送失败, 错误码是：' + code + '！');
 		}
 		if (callBack)
-			callBack(code);
+			callBack(code, this.p);
 	}
 }
 

@@ -10,9 +10,11 @@ export default class ChatTransDataEventImpl implements IChatTransDataEvent {
     private onTransErrorCB: (params: object) => void = null;
 
     constructor(options?: ChatTransDataCB) {
-        const { onTransBufferCB, onTransErrorCB } = options;
-        this.onTransBufferCB = onTransBufferCB;
-        this.onTransErrorCB = onTransErrorCB;
+        if(options) {
+            const { onTransBufferCB, onTransErrorCB } = options;
+            this.onTransBufferCB = onTransBufferCB;
+            this.onTransErrorCB = onTransErrorCB;
+        }
     }
 
     public onTransBuffer(p: Protocal): void {
