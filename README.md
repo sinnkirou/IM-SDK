@@ -49,7 +49,7 @@
    ```tsx
    //code === 0 表示成功
    public login({
-      logiUserId: string,
+      loginUserId: string,
       loginToken: string,
       app: string,
       extra?: string,
