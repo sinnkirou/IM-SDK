@@ -11,32 +11,19 @@
    ```tsx
    const options: WSOptions = {
      wsUrl: WS_URL,
-   
      chatBaseCB: {
-   
          onLoginOrReloginSuccessCB,
-   
          onLoginOrReloginFailCB,
-   
          onLinkCloseMessageCB
      },
-   
      chatTransDataCB: {
-   
            onTransBufferCB,
-   
            onTransErrorCB
-   
      },
-   
      messageQoSCB: {
-   
        handleMessageLost,
-   
        messagesBeReceivedCB
-   
      }
-   
    };
    
    Manager.getInstance(options);
@@ -53,7 +40,8 @@
       loginToken: string,
       app: string,
       extra?: string,
-      callBack?: (code: number) => void }): void
+      callBack?: (code: number) => void
+   }): void
    ```
 
    e.g.: 
@@ -64,7 +52,7 @@
       loginToken: token,
       app: 'test',
       callBack: (code) => {
-   			if (callBack) { callBack(code); }
+   		  if (callBack) { callBack(code); }
       }
    });
    ```
@@ -117,12 +105,14 @@
    ```
 
 5. 释放
-
+   ```tsx
    public release(): void
+   ```
 
    e.g.
-
+   ```tsx
    Manager.getInstance().release();
+   ```
 
 
 
