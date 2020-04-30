@@ -45,6 +45,7 @@ export default class ClientCoreSDK {
     };
     private wsUrl: string = null;
     private wsProtocal?: string = null;
+    private uni: Uni = null;
 
     public static getInstance(): ClientCoreSDK {
         if (ClientCoreSDK.instance == null) {
@@ -59,6 +60,9 @@ export default class ClientCoreSDK {
             if(ClientCoreSDK.DEBUG) {
                 Logger.debug(ClientCoreSDK.TAG, '【IMCORE】IM Client初始化');
             }
+            this.wsUrl = wsUrl;
+            this.wsProtocal = wsProtocal;
+            this.uni = uni;
             LocalWSProvider.getInstance(wsUrl, wsProtocal, uni);
             this.registerReceiver(this.networkConnectionStatusBroadcastReceiver);
             AutoReLoginDaemon.getInstance();
@@ -67,8 +71,6 @@ export default class ClientCoreSDK {
             QoS4ReciveDaemon.getInstance();
             QoS4SendDaemon.getInstance();
             this.init = true;
-            this.wsUrl = wsUrl;
-            this.wsProtocal = wsProtocal;
         }
     }
 
@@ -210,19 +212,20 @@ export default class ClientCoreSDK {
     }
 
     private registerReceiver(networkConnectionStatusBroadcastReceiver: EventListenerOrEventListenerObject): void {
-        let localWSSocket: WebSocket|SocketTask = LocalWSProvider.getInstance().getLocalWebSocket();
-        localWSSocket.onerror = (event) => {
+        LocalWSProvider.getInstance().setOnErrorListener((event) => {
             Logger.error(ClientCoreSDK.TAG, 'WS检测到异常', null, event);
+        });
+        if(!this.uni) {
+            window.addEventListener("online", networkConnectionStatusBroadcastReceiver);
+            window.addEventListener("offline", networkConnectionStatusBroadcastReceiver);
         }
-        window.addEventListener("online", networkConnectionStatusBroadcastReceiver);
-        window.addEventListener("offline", networkConnectionStatusBroadcastReceiver);
     }
 
     private unregisterReceiver(networkConnectionStatusBroadcastReceiver: EventListenerOrEventListenerObject): void {
-        let localWSSocket: WebSocket|SocketTask = LocalWSProvider.getInstance().getLocalWebSocket();
-        if(localWSSocket)
-            localWSSocket.onerror = null;
-        window.removeEventListener("online", networkConnectionStatusBroadcastReceiver);
-        window.removeEventListener("offline", networkConnectionStatusBroadcastReceiver);
+        LocalWSProvider.getInstance().setOnErrorListener(null);
+        if(!this.uni) {
+            window.removeEventListener("online", networkConnectionStatusBroadcastReceiver);
+            window.removeEventListener("offline", networkConnectionStatusBroadcastReceiver);
+        }
     }
 }

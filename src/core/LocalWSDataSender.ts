@@ -90,8 +90,7 @@ export default class LocalWSDataSender {
 			Logger.error(LocalWSDataSender.TAG, '【IMCORE】本地网络不能工作，send数据没有继续!');
 			return 204;
 		} else {
-			let ds: WebSocket|SocketTask = LocalWSProvider.getInstance().getLocalWebSocket();
-			if (ds != null && ds.readyState === ds.OPEN) {
+			if (LocalWSProvider.getInstance().isLocalWebSocketOpen()) {
 				try {
 					if (LocalWSProvider.getInstance().getURL == null) {
 						Logger.warn(
@@ -131,7 +130,7 @@ export class SendLoginDataAsync {
 	public exceute(callBack?: (code: number) => void): void {
 		const reRunProcess = new MockThread(async () => {
 			if(ClientCoreSDK.DEBUG){
-				Logger.warn(LocalWSDataSender.TAG, '检查ws初始化状态并尝试登陆');
+				Logger.info(LocalWSDataSender.TAG, '检查ws初始化状态并尝试登陆');
 			}
 			if (!ClientCoreSDK.getInstance().isInitialized()) {
 				let code: number = 203;

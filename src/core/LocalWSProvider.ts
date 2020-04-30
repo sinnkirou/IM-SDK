@@ -4,10 +4,11 @@ import Logger from '../utils/Logger';
 export default class LocalWSProvider {
     private static TAG: string = LocalWSProvider.name;
     private static instance: LocalWSProvider = null;
-    private localWebSocket: WebSocket|SocketTask = null;
+    private localWebSocket: WebSocket | SocketTask = null;
     private wsUrl: string = null;
     private wsProtocal: string = null;
     private uni: Uni = null;
+    private uniState: 0|1|2|3 = 3;
 
     public static getInstance(wsUrl?: string, wsProtocal?: string, uni?: Uni): LocalWSProvider {
         if (LocalWSProvider.instance == null) {
@@ -21,31 +22,35 @@ export default class LocalWSProvider {
         return LocalWSProvider.instance;
     }
 
-    constructor(wsUrl: string, wsProtocal?: string, uni?:Uni) {
+    constructor(wsUrl: string, wsProtocal?: string, uni?: Uni) {
         this.wsUrl = wsUrl;
         this.wsProtocal = wsProtocal;
         this.uni = uni;
         this.setLocalWebSocket(wsUrl, wsProtocal);
     }
 
-    private setLocalWebSocket(wsUrl: string, wsProtocal?: string): WebSocket|SocketTask {
-        if(this.uni) {
+    private setLocalWebSocket(wsUrl: string, wsProtocal?: string): WebSocket | SocketTask {
+        if (this.uni) {
             this.localWebSocket = this.uni.connectSocket({
                 url: wsUrl,
-                complete: ()=> {}
+                complete: () => { }
             });
-            this.localWebSocket.onclose = this.localWebSocket.onClose;
-            this.localWebSocket.onerror = this.localWebSocket.onError;
-            this.localWebSocket.onmessage = this.localWebSocket.onMessage;
-            this.localWebSocket.onopen = this.localWebSocket.onOpen;
-            this.localWebSocket.readyState = this.localWebSocket.OPEN;
+            this.localWebSocket.onOpen(()=> {
+                this.uniState = 1;
+            });
+            this.localWebSocket.onError(()=> {
+                this.uniState = 3;
+            })
+            this.localWebSocket.onClose(()=> {
+                this.uniState = 3;
+            })
         } else {
             this.localWebSocket = new WebSocket(wsUrl, wsProtocal);
         }
         return this.localWebSocket;
     }
 
-    public resetLocalWebSocket(): WebSocket|SocketTask {
+    public resetLocalWebSocket(): WebSocket | SocketTask {
         try {
             this.closeLocalWebSocket();
             this.localWebSocket = this.setLocalWebSocket(this.wsUrl, this.wsProtocal);
@@ -58,8 +63,8 @@ export default class LocalWSProvider {
     }
 
     private isLocalWebSocketReady(): boolean {
-        if(this.uni) {
-            return this.localWebSocket != null;
+        if (this.uni) {
+            return this.localWebSocket != null && this.uniState !== 3;
         }
         return this.localWebSocket != null && (
             this.localWebSocket.readyState === this.localWebSocket.OPEN ||
@@ -68,12 +73,15 @@ export default class LocalWSProvider {
     }
 
     public isLocalWebSocketOpen(): boolean {
+        if (this.uni) {
+            return this.localWebSocket != null &&  this.uniState === 1;
+        }
         return this.localWebSocket != null && (
             this.localWebSocket.readyState === this.localWebSocket.OPEN
         );
     }
 
-    public getLocalWebSocket(): WebSocket|SocketTask {
+    public getLocalWebSocket(): WebSocket | SocketTask {
         return this.isLocalWebSocketReady() ? this.localWebSocket : this.resetLocalWebSocket();
     }
 
@@ -106,8 +114,12 @@ export default class LocalWSProvider {
         const skt = this.localWebSocket;
         if (skt != null && data != null) {
             try {
-                if (skt.readyState === skt.OPEN) {
-                    skt.send(data);
+                if (this.isLocalWebSocketOpen()) {
+                    if (this.uni) {
+                        skt.send({ data });
+                    } else {
+                        skt.send(data);
+                    }
                     return true;
                 }
                 Logger.error(LocalWSProvider.TAG, "【IMCORE】send方法中》》发送WS数据报文时出错了：readyState=" + skt.readyState + " 数据是", null, data);
@@ -119,5 +131,25 @@ export default class LocalWSProvider {
         }
         Logger.error(LocalWSProvider.TAG, "【IMCORE】send方法中》》无效的参数：skt=", null, skt);
         return false;
+    }
+
+    public setOnMessageListener(callBack: (event) => void): void {
+        if (this.localWebSocket) {
+            if (this.uni) {
+                this.localWebSocket.onMessage(callBack);
+            } else {
+                this.localWebSocket.onmessage = callBack;
+            }
+        }
+    }
+
+    public setOnErrorListener(callBack?: (params) => void): void {
+        if (this.localWebSocket) {
+            if (this.uni) {
+                this.localWebSocket.onError(callBack);
+            } else {
+                this.localWebSocket.onerror = callBack;
+            }
+        }
     }
 }

@@ -6,6 +6,12 @@ declare module '*.svg';
 declare module '*.png';
 declare module '*.json';
 
+interface WebSocket {
+    send(data: any): void;
+    onMessage?: (CALLBACK) => void;
+    onError?: (CALLBACK) => void;
+}
+
 interface SocketTask {
     onMessage: (CALLBACK) => void;
     send: (OBJECT) => void;
@@ -29,4 +35,5 @@ interface Uni {
         protocals?: Array<String>, 
         complete?: ()=>void
     }) => SocketTask;
+    onSocketMessage?: (OBJECT) => void;
 }
