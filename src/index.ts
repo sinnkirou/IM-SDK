@@ -13,6 +13,7 @@ export interface WSOptions {
 	chatBaseCB?: ChatBaseCB,
 	chatTransDataCB?: ChatTransDataCB,
 	messageQoSCB?: MessageQoSCB,
+	uni?: Uni
 }
 
 export default class IMClientManager {
@@ -38,7 +39,7 @@ export default class IMClientManager {
 			if (!wsUrl) {
 				throw new Error("wsURL 参数不可为空");
 			}
-			IMClientManager.instance = new IMClientManager(options)
+			IMClientManager.instance = new IMClientManager(options);
 		};
 		return IMClientManager.instance;
 	}
@@ -50,8 +51,8 @@ export default class IMClientManager {
 	private initMobileIMSDK(options: WSOptions): void {
 		if (!IMClientManager.init) {
 			ClientCoreSDK.DEBUG = IMClientManager.DEBUG;
-			const { wsUrl, wsProtocal, chatBaseCB, chatTransDataCB, messageQoSCB } = options;
-			ClientCoreSDK.getInstance().initialize(wsUrl, wsProtocal);
+			const { wsUrl, wsProtocal, chatBaseCB, chatTransDataCB, messageQoSCB, uni } = options;
+			ClientCoreSDK.getInstance().initialize(wsUrl, wsProtocal, uni);
 
 			// 设置事件回调
 			this.baseEventListener = new ChatBaseEventImpl(chatBaseCB);

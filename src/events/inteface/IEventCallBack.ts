@@ -7,7 +7,7 @@ export interface ChatBaseCB {
 }
 
 export interface ChatTransDataCB {
-    onTransBufferCB?: (params: Protocal) => void,
+    onTransBufferCB?: (msg: Protocal) => void,
     onTransErrorCB?: (params: object) => void
 }
 

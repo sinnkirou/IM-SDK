@@ -35,7 +35,7 @@ export default class LocalWSDataReciever {
     }
 
     public stop(): void {
-        let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
+        let localWSSocket: WebSocket|SocketTask = LocalWSProvider.getInstance().getLocalWebSocket();
         if(localWSSocket) {
             localWSSocket.onerror = null;
         }
@@ -63,7 +63,7 @@ export default class LocalWSDataReciever {
     }
 
     private wsListeningImpl(): void {
-        let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
+        let localWSSocket: WebSocket|SocketTask = LocalWSProvider.getInstance().getLocalWebSocket();
         if (localWSSocket != null && localWSSocket.readyState === localWSSocket.OPEN) {
             localWSSocket.onmessage =  (event)=> {
                 this.messageHandler.handleMessage(event);

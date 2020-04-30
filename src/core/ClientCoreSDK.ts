@@ -54,12 +54,12 @@ export default class ClientCoreSDK {
         return ClientCoreSDK.instance;
     }
 
-    public initialize(wsUrl: string, wsProtocal?: string): void {
+    public initialize(wsUrl: string, wsProtocal?: string, uni?: Uni): void {
         if (!this.init) {
             if(ClientCoreSDK.DEBUG) {
                 Logger.debug(ClientCoreSDK.TAG, '【IMCORE】IM Client初始化');
             }
-            LocalWSProvider.getInstance(wsUrl, wsProtocal);
+            LocalWSProvider.getInstance(wsUrl, wsProtocal, uni);
             this.registerReceiver(this.networkConnectionStatusBroadcastReceiver);
             AutoReLoginDaemon.getInstance();
             KeepAliveDaemon.getInstance();
@@ -210,7 +210,7 @@ export default class ClientCoreSDK {
     }
 
     private registerReceiver(networkConnectionStatusBroadcastReceiver: EventListenerOrEventListenerObject): void {
-        let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
+        let localWSSocket: WebSocket|SocketTask = LocalWSProvider.getInstance().getLocalWebSocket();
         localWSSocket.onerror = (event) => {
             Logger.error(ClientCoreSDK.TAG, 'WS检测到异常', null, event);
         }
@@ -219,7 +219,7 @@ export default class ClientCoreSDK {
     }
 
     private unregisterReceiver(networkConnectionStatusBroadcastReceiver: EventListenerOrEventListenerObject): void {
-        let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
+        let localWSSocket: WebSocket|SocketTask = LocalWSProvider.getInstance().getLocalWebSocket();
         if(localWSSocket)
             localWSSocket.onerror = null;
         window.removeEventListener("online", networkConnectionStatusBroadcastReceiver);

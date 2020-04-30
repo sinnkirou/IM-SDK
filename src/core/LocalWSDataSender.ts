@@ -1,7 +1,6 @@
 import ClientCoreSDK from './ClientCoreSDK';
 import Protocal from '../base/Protocal';
 import ProtocalFactory from '../base/ProtocalFactory';
-import WebsocketUtil from '../utils/WebsocketUtil';
 import LocalWSProvider from './LocalWSProvider';
 import LocalWSDataReciever from './LocalWSDataReciever';
 import QoS4SendDaemon from './QoS4SendDaemon';
@@ -91,7 +90,7 @@ export default class LocalWSDataSender {
 			Logger.error(LocalWSDataSender.TAG, '【IMCORE】本地网络不能工作，send数据没有继续!');
 			return 204;
 		} else {
-			let ds: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
+			let ds: WebSocket|SocketTask = LocalWSProvider.getInstance().getLocalWebSocket();
 			if (ds != null && ds.readyState === ds.OPEN) {
 				try {
 					if (LocalWSProvider.getInstance().getURL == null) {
@@ -108,7 +107,7 @@ export default class LocalWSDataSender {
 				}
 			}
 
-			return WebsocketUtil.send(ds, data) ? 0 : 3;
+			return LocalWSProvider.getInstance().send(data) ? 0 : 3;
 		}
 	}
 }

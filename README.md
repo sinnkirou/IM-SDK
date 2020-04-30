@@ -13,7 +13,8 @@
    	wsProtocal?: string, //websocker协议
    	chatBaseCB?: ChatBaseCB, // 见下方
    	chatTransDataCB?: ChatTransDataCB, // 见下方
-   	messageQoSCB?: MessageQoSCB, // 见下方
+      messageQoSCB?: MessageQoSCB, // 见下方
+      uni?: Uni, //使用uni时传入
    }
    export interface ChatBaseCB {
        onLoginOrReloginSuccessCB?: () => void, // 登陆或重新登陆成功callback
