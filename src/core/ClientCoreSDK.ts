@@ -85,7 +85,7 @@ export default class ClientCoreSDK {
                 })
             }
             if (!this.init && this.wsUrl) {
-                LocalWSProvider.getInstance(this.wsUrl, this.wsProtocal);
+                LocalWSProvider.getInstance(this.wsUrl, this.wsProtocal, this.uni, true);
                 this.registerReceiver(this.networkConnectionStatusBroadcastReceiver);
                 AutoReLoginDaemon.getInstance(true);
                 KeepAliveDaemon.getInstance(true);

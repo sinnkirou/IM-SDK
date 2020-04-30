@@ -10,6 +10,7 @@ interface WebSocket {
     send(data: any): void;
     onMessage?: (CALLBACK) => void;
     onError?: (CALLBACK) => void;
+    onOpen?: (CALLBACK) => void;
 }
 
 interface SocketTask {

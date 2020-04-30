@@ -10,8 +10,8 @@ export default class LocalWSProvider {
     private uni: Uni = null;
     private uniState: 0|1|2|3 = 3;
 
-    public static getInstance(wsUrl?: string, wsProtocal?: string, uni?: Uni): LocalWSProvider {
-        if (LocalWSProvider.instance == null) {
+    public static getInstance(wsUrl?: string, wsProtocal?: string, uni?: Uni, reset: boolean = false): LocalWSProvider {
+        if (LocalWSProvider.instance == null || reset) {
             if (!wsUrl) {
                 throw new Error("localWebSocket未初始化");
             } else {
@@ -149,6 +149,16 @@ export default class LocalWSProvider {
                 this.localWebSocket.onError(callBack);
             } else {
                 this.localWebSocket.onerror = callBack;
+            }
+        }
+    }
+
+    public setOnOpenListener(callBack?: (params) => void): void {
+        if (this.localWebSocket) {
+            if (this.uni) {
+                this.localWebSocket.onOpen(callBack);
+            } else {
+                this.localWebSocket.onopen = callBack;
             }
         }
     }

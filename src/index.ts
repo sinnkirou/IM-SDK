@@ -19,7 +19,7 @@ export interface WSOptions {
 export default class IMClientManager {
 	private static TAG: string = IMClientManager.name;
 
-	private static DEBUG: boolean = false;
+	private static DEBUG: boolean = true;
 
 	private static instance: IMClientManager = null;
 
