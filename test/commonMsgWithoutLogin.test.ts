@@ -42,6 +42,6 @@ describe('Common messages', () => {
                 server.send(JSON.stringify({ "bridge": false, "type": 52, "dataContent": "{\"errorCode\":301,\"errorMsg\":\"{\\\"bridge\\\":false,\\\"type\\\":2,\\\"dataContent\\\":\\\"sss\\\",\\\"to\\\":\\\"5\\\",\\\"fp\\\":\\\"f7ebead0-8f3a-11ea-a183-5f898b4edcda\\\",\\\"Qos\\\":true,\\\"typeu\\\":0,\\\"sendTs\\\":0}\"}", "from": "0", "to": "-1", "Qos": false, "typeu": -1, "sendTs": -1 }));
             },
         })
-        await expect(server).toReceiveMessage(`{\"bridge\":false,\"type\":0,\"dataContent\":\"{\\\"loginUserId\\\":\\\"1\\\",\\\"loginToken\\\":\\\"token\\\",\\\"extra\\\":null,\\\"app\\\":\\\"123\\\"}\",\"from\":\"1\",\"to\":\"0\",\"fp\":null,\"Qos\":false,\"typeu\":-1,\"retryCount\":0}`);
+        await expect(server).toReceiveMessage("{\"bridge\":false,\"type\":0,\"dataContent\":\"{\\\"loginUserId\\\":\\\"1\\\",\\\"loginToken\\\":\\\"token\\\",\\\"extra\\\":null,\\\"app\\\":\\\"123\\\"}\",\"from\":\"1\",\"to\":\"0\",\"fp\":null,\"Qos\":false,\"typeu\":-1,\"retryCount\":0,\"sendTs\":null}");
     });
 })
