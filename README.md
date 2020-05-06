@@ -127,7 +127,8 @@
    ```tsx
    public send({
       dataContent: string, //发送内容，内容为文本时为本身，为文件时由应用层定义规则并解析，比如定义为`${fp}|${fileName}|${fileType}|${fileKey}`
-      toId: string, // 发送对象id
+      fromId: string, // 发送方id，可选，默认为已登陆id
+      toId: string, // 接收方id
       Qos: boolean = true, //是否需要服务端ack，默认为true
       fingerPrint?: string, //消息报指纹，唯一id
       typeu: number = 0, // 单聊0，群聊1
