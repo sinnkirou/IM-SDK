@@ -8,6 +8,7 @@ interface Options {
     Qos?: boolean;
     fp?: string;
     typeu?: number;
+    sendTs?: number;
 }
 
 export default class Protocal {
@@ -20,9 +21,10 @@ export default class Protocal {
     private Qos: boolean;
     private typeu: number;
     private retryCount: number;
+    private sendTs: number;
 
     constructor(options: Options) {
-        const { type = 0, dataContent = null, from = '-1', to = "0", Qos = false, typeu = -1, fp = null } = options;
+        const { type = 0, dataContent = null, from = '-1', to = "0", Qos = false, typeu = -1, fp = null, sendTs = null } = options;
         this.bridge = false;
         this.type = type;
         this.dataContent = dataContent;
@@ -32,6 +34,7 @@ export default class Protocal {
         this.Qos = Qos;
         this.typeu = typeu;
         this.retryCount = 0;
+        this.sendTs = sendTs;
         if (Qos && fp == null) {
             this.fp = Protocal.genFingerPrint();
         } else {

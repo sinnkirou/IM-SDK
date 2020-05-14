@@ -45,6 +45,7 @@ export default class ClientCoreSDK {
     };
     private wsUrl: string = null;
     private wsProtocal?: string = null;
+    private uni: Uni = null;
 
     public static getInstance(): ClientCoreSDK {
         if (ClientCoreSDK.instance == null) {
@@ -54,12 +55,15 @@ export default class ClientCoreSDK {
         return ClientCoreSDK.instance;
     }
 
-    public initialize(wsUrl: string, wsProtocal?: string): void {
+    public initialize(wsUrl: string, wsProtocal?: string, uni?: Uni): void {
         if (!this.init) {
             if(ClientCoreSDK.DEBUG) {
                 Logger.debug(ClientCoreSDK.TAG, '【IMCORE】IM Client初始化');
             }
-            LocalWSProvider.getInstance(wsUrl, wsProtocal);
+            this.wsUrl = wsUrl;
+            this.wsProtocal = wsProtocal;
+            this.uni = uni;
+            LocalWSProvider.getInstance(wsUrl, wsProtocal, uni);
             this.registerReceiver(this.networkConnectionStatusBroadcastReceiver);
             AutoReLoginDaemon.getInstance();
             KeepAliveDaemon.getInstance();
@@ -67,8 +71,6 @@ export default class ClientCoreSDK {
             QoS4ReciveDaemon.getInstance();
             QoS4SendDaemon.getInstance();
             this.init = true;
-            this.wsUrl = wsUrl;
-            this.wsProtocal = wsProtocal;
         }
     }
 
@@ -83,7 +85,7 @@ export default class ClientCoreSDK {
                 })
             }
             if (!this.init && this.wsUrl) {
-                LocalWSProvider.getInstance(this.wsUrl, this.wsProtocal);
+                LocalWSProvider.getInstance(this.wsUrl, this.wsProtocal, this.uni, true);
                 this.registerReceiver(this.networkConnectionStatusBroadcastReceiver);
                 AutoReLoginDaemon.getInstance(true);
                 KeepAliveDaemon.getInstance(true);
@@ -102,9 +104,9 @@ export default class ClientCoreSDK {
     }
 
     public release(): void {
-        setTimeout(() => {
-            LocalWSProvider.getInstance().closeLocalWebSocket();
-        }, 500);
+        // setTimeout(() => {
+        //     LocalWSProvider.getInstance().closeLocalWebSocket();
+        // }, 500);
         AutoReLoginDaemon.getInstance().stop();
         QoS4SendDaemon.getInstance().stop();
         KeepAliveDaemon.getInstance().stop();
@@ -112,6 +114,7 @@ export default class ClientCoreSDK {
         QoS4ReciveDaemon.getInstance().stop();
         QoS4SendDaemon.getInstance().clear();
         QoS4ReciveDaemon.getInstance().clear();
+        LocalWSProvider.getInstance().closeLocalWebSocket();
 
         try {
             this.unregisterReceiver(this.networkConnectionStatusBroadcastReceiver);
@@ -209,19 +212,20 @@ export default class ClientCoreSDK {
     }
 
     private registerReceiver(networkConnectionStatusBroadcastReceiver: EventListenerOrEventListenerObject): void {
-        let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
-        localWSSocket.onerror = (event) => {
+        LocalWSProvider.getInstance().setOnErrorListener((event) => {
             Logger.error(ClientCoreSDK.TAG, 'WS检测到异常', null, event);
+        });
+        if(!this.uni) {
+            window.addEventListener("online", networkConnectionStatusBroadcastReceiver);
+            window.addEventListener("offline", networkConnectionStatusBroadcastReceiver);
         }
-        window.addEventListener("online", networkConnectionStatusBroadcastReceiver);
-        window.addEventListener("offline", networkConnectionStatusBroadcastReceiver);
     }
 
     private unregisterReceiver(networkConnectionStatusBroadcastReceiver: EventListenerOrEventListenerObject): void {
-        let localWSSocket: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
-        if(localWSSocket)
-            localWSSocket.onerror = null;
-        window.removeEventListener("online", networkConnectionStatusBroadcastReceiver);
-        window.removeEventListener("offline", networkConnectionStatusBroadcastReceiver);
+        LocalWSProvider.getInstance().setOnErrorListener(null);
+        if(!this.uni) {
+            window.removeEventListener("online", networkConnectionStatusBroadcastReceiver);
+            window.removeEventListener("offline", networkConnectionStatusBroadcastReceiver);
+        }
     }
 }

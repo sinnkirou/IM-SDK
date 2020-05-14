@@ -84,13 +84,17 @@ import moment from 'moment';
 					type="button"
 					value="发送"
 					onClick={() => {
-						Manager.getInstance().send(content.current.value, from.current.value, to.current.value, true, null, null, code => {
-							if (code === 0) {
-								content.current.value = "";
-							} else {
-								setStatus(`发送失败，code：${code}`)
-							}
-						});
+						Manager.getInstance().send({
+							dataContent: content.current.value, 
+							toId: to.current.value, 
+							callBack: (code, msg) => {
+								if (code === 0) {
+									console.debug(msg);
+									content.current.value = "";
+								} else {
+									setStatus(`发送失败，code：${code}`)
+								}
+						}});
 					}}
 				/>
 			</>}
@@ -99,9 +103,14 @@ import moment from 'moment';
 					type="button"
 					value="登陆"
 					onClick={() => {
-						Manager.getInstance(options).login(from.current.value, 'token', 'test', null,  code => {
-							if (code !== 0) {
-								alert('登陆失败，请重试');
+						Manager.getInstance(options).login({
+							loginUserId: from.current.value, 
+							loginToken: 'token', 
+							app: 'test',
+							callBack: code => {
+								if (code !== 0) {
+									alert('登陆失败，请重试');
+								}
 							}
 						});
 					}}

@@ -76,9 +76,9 @@ export default class QoS4SendDaemon {
                                         );
                                     }
                                 } else {
+                                    p.increaseRetryCount();
                                     new SendCommonDataAsync(p).exceute((code) => {
                                         if (code == 0) {
-                                            p.increaseRetryCount();
                                             if (ClientCoreSDK.DEBUG) {
                                                 Logger.debug(
                                                     QoS4SendDaemon.TAG,

@@ -9,9 +9,11 @@ export default class MessageQoSEventImpl implements IMessageQoSEvent {
     private messagesBeReceivedCB: (fingerPrint: string) => void = null;
 
     constructor(options?: MessageQoSCB) {
-        const { handleMessageLost, messagesBeReceivedCB } = options
-        this.handleMessageLost = handleMessageLost;
-        this.messagesBeReceivedCB = messagesBeReceivedCB;
+        if(options) {
+            const { handleMessageLost, messagesBeReceivedCB } = options
+            this.handleMessageLost = handleMessageLost;
+            this.messagesBeReceivedCB = messagesBeReceivedCB;
+        }
     }
 
     public messagesLost(lostMessages: Array<Protocal>): void {

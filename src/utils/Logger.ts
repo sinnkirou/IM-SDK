@@ -7,7 +7,7 @@ const log = (tag: string = null, level: string, msg: string, others: any = '') =
 	} else if (level === 'WARN') {
 		console.warn(formattedMsg, others);
 	} else {
-		console.debug(formattedMsg, others);
+		console.info(formattedMsg, others);
 	}
 };
 

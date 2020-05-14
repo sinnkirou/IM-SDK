@@ -9,10 +9,12 @@ export default class ChatBaseEventImpl implements IChatBaseEvent {
 	private onLinkCloseMessageCB: () => void = null;
 
 	constructor(options?: ChatBaseCB) {
-		const { onLoginOrReloginSuccessCB, onLoginOrReloginFailCB, onLinkCloseMessageCB } = options;
-		this.onLoginOrReloginSuccessCB = onLoginOrReloginSuccessCB;
-		this.onLinkCloseMessageCB = onLinkCloseMessageCB;
-		this.onLoginOrReloginFailCB = onLoginOrReloginFailCB;
+		if(options) {
+			const { onLoginOrReloginSuccessCB, onLoginOrReloginFailCB, onLinkCloseMessageCB } = options;
+			this.onLoginOrReloginSuccessCB = onLoginOrReloginSuccessCB;
+			this.onLinkCloseMessageCB = onLinkCloseMessageCB;
+			this.onLoginOrReloginFailCB = onLoginOrReloginFailCB;
+		}
 	}
 
 	public onLoginMessage(dwErrorCode: number): void {

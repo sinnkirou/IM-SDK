@@ -1,7 +1,6 @@
 import ClientCoreSDK from './ClientCoreSDK';
 import Protocal from '../base/Protocal';
 import ProtocalFactory from '../base/ProtocalFactory';
-import WebsocketUtil from '../utils/WebsocketUtil';
 import LocalWSProvider from './LocalWSProvider';
 import LocalWSDataReciever from './LocalWSDataReciever';
 import QoS4SendDaemon from './QoS4SendDaemon';
@@ -91,8 +90,7 @@ export default class LocalWSDataSender {
 			Logger.error(LocalWSDataSender.TAG, '【IMCORE】本地网络不能工作，send数据没有继续!');
 			return 204;
 		} else {
-			let ds: WebSocket = LocalWSProvider.getInstance().getLocalWebSocket();
-			if (ds != null && ds.readyState === ds.OPEN) {
+			if (LocalWSProvider.getInstance().isLocalWebSocketOpen()) {
 				try {
 					if (LocalWSProvider.getInstance().getURL == null) {
 						Logger.warn(
@@ -108,7 +106,7 @@ export default class LocalWSDataSender {
 				}
 			}
 
-			return WebsocketUtil.send(ds, data) ? 0 : 3;
+			return LocalWSProvider.getInstance().send(data) ? 0 : 3;
 		}
 	}
 }
@@ -132,7 +130,7 @@ export class SendLoginDataAsync {
 	public exceute(callBack?: (code: number) => void): void {
 		const reRunProcess = new MockThread(async () => {
 			if(ClientCoreSDK.DEBUG){
-				Logger.warn(LocalWSDataSender.TAG, '检查ws初始化状态并尝试登陆');
+				Logger.info(LocalWSDataSender.TAG, '检查ws初始化状态并尝试登陆');
 			}
 			if (!ClientCoreSDK.getInstance().isInitialized()) {
 				let code: number = 203;
@@ -191,7 +189,7 @@ export class SendCommonDataAsync {
 		}
 	}
 
-	public async exceute(callBack?: (code: number) => void): Promise<void> {
+	public async exceute(callBack?: (code: number, msg: Protocal) => void): Promise<void> {
 		let code: number =
 			this.p != null ? await LocalWSDataSender.getInstance().sendCommonDataWithProtocal(this.p) : -1;
 
@@ -199,7 +197,7 @@ export class SendCommonDataAsync {
 			Logger.warn(LocalWSDataSender.TAG, '【IMCORE】通用数据发送失败, 错误码是：' + code + '！');
 		}
 		if (callBack)
-			callBack(code);
+			callBack(code, this.p);
 	}
 }
 

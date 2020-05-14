@@ -5,6 +5,7 @@ import MessageQoSEventImpl from './events/MessageQoSEventImpl';
 import { SendCommonDataAsync, SendLoginDataAsync, SendLogoutDataAsync } from './core/LocalWSDataSender';
 import ProtocalFactory from './base/ProtocalFactory';
 import { ChatBaseCB, ChatTransDataCB, MessageQoSCB } from './events/inteface/IEventCallBack';
+import Protocal from './base/Protocal';
 
 export interface WSOptions {
 	wsUrl: string,
@@ -12,6 +13,7 @@ export interface WSOptions {
 	chatBaseCB?: ChatBaseCB,
 	chatTransDataCB?: ChatTransDataCB,
 	messageQoSCB?: MessageQoSCB,
+	uni?: Uni
 }
 
 export default class IMClientManager {
@@ -22,7 +24,7 @@ export default class IMClientManager {
 	private static instance: IMClientManager = null;
 
 	/** MobileIMSDK是否已被初始化. true表示已初化完成，否则未初始化. */
-	private init: boolean = false;
+	private static init: boolean = false;
 
 	//
 	private baseEventListener: ChatBaseEventImpl = null;
@@ -32,12 +34,12 @@ export default class IMClientManager {
 	private messageQoSListener: MessageQoSEventImpl = null;
 
 	public static getInstance(options?: WSOptions): IMClientManager {
-		if (IMClientManager.instance == null || !IMClientManager.instance.getInitFlag()) {
+		if (IMClientManager.instance == null || !IMClientManager.getInitFlag()) {
 			const { wsUrl, } = options || { wsUrl: '' };
 			if (!wsUrl) {
 				throw new Error("wsURL 参数不可为空");
 			}
-			IMClientManager.instance = new IMClientManager(options)
+			IMClientManager.instance = new IMClientManager(options);
 		};
 		return IMClientManager.instance;
 	}
@@ -47,10 +49,10 @@ export default class IMClientManager {
 	}
 
 	private initMobileIMSDK(options: WSOptions): void {
-		if (!this.init) {
+		if (!IMClientManager.init) {
 			ClientCoreSDK.DEBUG = IMClientManager.DEBUG;
-			const { wsUrl, wsProtocal, chatBaseCB, chatTransDataCB, messageQoSCB } = options;
-			ClientCoreSDK.getInstance().initialize(wsUrl, wsProtocal);
+			const { wsUrl, wsProtocal, chatBaseCB, chatTransDataCB, messageQoSCB, uni } = options;
+			ClientCoreSDK.getInstance().initialize(wsUrl, wsProtocal, uni);
 
 			// 设置事件回调
 			this.baseEventListener = new ChatBaseEventImpl(chatBaseCB);
@@ -60,7 +62,7 @@ export default class IMClientManager {
 			ClientCoreSDK.getInstance().setChatTransDataEvent(this.transDataListener);
 			ClientCoreSDK.getInstance().setMessageQoSEvent(this.messageQoSListener);
 
-			this.init = true;
+			IMClientManager.init = true;
 		}
 	}
 
@@ -78,11 +80,11 @@ export default class IMClientManager {
 	 * 
 	 */
 	public resetInitFlag(): void {
-		this.init = false;
+		IMClientManager.init = false;
 	}
 
-	public getInitFlag(): boolean {
-		return this.init;
+	public static getInitFlag(): boolean {
+		return IMClientManager.init;
 	}
 
 	public getTransDataListener(): ChatTransDataEventImpl {
@@ -95,15 +97,15 @@ export default class IMClientManager {
 		return this.messageQoSListener;
 	}
 
-	public login(logiUserId: string, loginToken: string, app: string, extra?: string, callBack?: (code: number) => void): void {
-		new SendLoginDataAsync(logiUserId, loginToken, app, extra).exceute(callBack);
+	public login({ loginUserId, loginToken, app, extra, callBack }: { loginUserId: string, loginToken: string, app: string, extra?: string, callBack?: (code: number) => void }): void {
+		new SendLoginDataAsync(loginUserId, loginToken, app, extra).exceute(callBack);
 	}
 
 	public logout(callBack?: (code: number) => void): void {
 		new SendLogoutDataAsync().exceute(callBack);
 	}
-	public send(dataContent: string, from_user_id: string, to_user_id: string, Qos: boolean = true, fingerPrint?: string, typeu: number = 0, callBack?: (code: number) => void): void {
-		new SendCommonDataAsync(ProtocalFactory.createCommonData(dataContent, from_user_id, to_user_id, Qos, fingerPrint, typeu)).exceute(callBack);
+	public send({ dataContent, fromId, toId, Qos = true, fingerPrint, typeu = 0, callBack }: { dataContent: string, fromId?: string, toId: string, Qos?: boolean, fingerPrint?: string, typeu?: number, callBack?: (code: number, msg: Protocal) => void }): void {
+		new SendCommonDataAsync(ProtocalFactory.createCommonData(dataContent, fromId || ClientCoreSDK.getInstance().getCurrentLoginUserId(), toId, Qos, fingerPrint, typeu)).exceute(callBack);
 	}
 
 }
